@@ -1,0 +1,9 @@
+<%- include("includes/head.ejs") %>
+<div>
+  <ul>
+    <% for(let user of users) { %>
+    <li><%= user.user_name %></li>
+    <% } %>
+  </ul>
+</div>
+<%- include("includes/end.ejs") %>

@@ -1,0 +1,23 @@
+[
+  {
+    "id": "222",
+    "title": "Book Two",
+    "imageUrl": "https://www.publicdomainpictures.net/pictures/10000/velka/1-1210009435EGmE.jpg  ",
+    "description": "This is an awesome book!",
+    "price": "100"
+  },
+  {
+    "id": "0.44421479274358866",
+    "title": "Book Two",
+    "imageUrl": "https://img.freepik.com/free-photo/stack-various-books-table_1252-710.jpg?size=626&ext=jpg",
+    "description": "You should not be missing this !",
+    "price": "500"
+  },
+  {
+    "id": "0.8382305159442158",
+    "title": "Book Peace",
+    "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYx_rdnLxBy9KRh_khXOVFLH2uMiHmhNk6bMhnOhkByOJ6HHEk ",
+    "description": "Enlighten yourself with the knowledge",
+    "price": "800"
+  }
+]
