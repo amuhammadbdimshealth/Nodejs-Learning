@@ -74,7 +74,7 @@ class User {
       let prodObjId = new mongodb.ObjectId(cartItem.productId)
       let singleProdFromDB = db.collection('products')
         .find({ _id: prodObjId })
-        .next()
+        .next() // can use Product.findById(prodId) method
       productsFromDBPromise.push(singleProdFromDB)
     })
     // Once all promises resolves , get the each item's quantity 
@@ -93,7 +93,8 @@ class User {
         return populatedCartItems.filter(cItem => cItem != null); // [ {title:'Prod1', price:5000, quantity: 2}, ... ]
       })
   }
-  /** Alternate approach 
+  /** 
+  # Alternate approach 
    * using mongodb '$in' operator
    */
   /*

@@ -630,7 +630,100 @@ We can store the user information inside the product in 2 ways:
 <img src="./assets/S12/241.png" alt="packages" width="800"/>
 
 
+## [x] Lets Code - DONE
+
 # S12 | Deleting Cart Items
 ---
+<img src="./assets/S12/242.png" alt="packages" width="800"/>
+<img src="./assets/S12/243.png" alt="packages" width="800"/>
+<img src="./assets/S12/244.png" alt="packages" width="800"/>
+<img src="./assets/S12/245.png" alt="packages" width="800"/>
+<img src="./assets/S12/246.png" alt="packages" width="800"/>
+<img src="./assets/S12/247.png" alt="packages" width="800"/>
 
-## [x] Lets Code - DONE
+
+
+# S12 | Adding an Order
+---
+<img src="./assets/S12/248.png" alt="packages" width="800"/>
+<img src="./assets/S12/249.png" alt="packages" width="800"/>
+<img src="./assets/S12/250.png" alt="packages" width="800"/>
+<img src="./assets/S12/251.png" alt="packages" width="800"/>
+<img src="./assets/S12/252.png" alt="packages" width="800"/>
+<img src="./assets/S12/253.png" alt="packages" width="800"/>
+<img src="./assets/S12/254.png" alt="packages" width="800"/>
+<img src="./assets/S12/255.png" alt="packages" width="800"/>
+
+ # S12 | Adding Relational Order Data
+---
+<img src="./assets/S12/256.png" alt="packages" width="800"/>
+<img src="./assets/S12/257.png" alt="packages" width="800"/>
+<img src="./assets/S12/258.png" alt="packages" width="800"/>
+<img src="./assets/S12/260.png" alt="packages" width="800"/>
+<img src="./assets/S12/261.png" alt="packages" width="800"/>
+<img src="./assets/S12/262.png" alt="packages" width="800"/>
+<img src="./assets/S12/263.png" alt="packages" width="800"/>
+
+# S12 | Getting Orders
+--- 
+<img src="./assets/S12/264.png" alt="packages" width="800"/>
+<img src="./assets/S12/265.png" alt="packages" width="800"/>
+<img src="./assets/S12/266.png" alt="packages" width="800"/>
+<img src="./assets/S12/267.png" alt="packages" width="800"/>
+<img src="./assets/S12/268.png" alt="packages" width="800"/>
+<img src="./assets/S12/269.png" alt="packages" width="800"/>
+<img src="./assets/S12/270.png" alt="packages" width="800"/>
+<img src="./assets/S12/271.png" alt="packages" width="800"/>
+
+
+# S12 | Removing Deleted Items From the Cart
+---
+#### Scenario:
+1. UserA adds 2 products in his cart - prodA, prodB
+2. The Admin comes in and before the UserA orders the products, he deletes prodA.
+3. Now the cart of the user contains an invalid product which actually does not exist in the DB.
+4. What we need to do ? - We need to clean up the UserA cart so that it only contains valid products.
+
+#### Strategies
+1. Running a scheduled script on the Server that clean up the user carts by comparing with current valid products
+2. Modify the `User.getCart()` method (**Homework**)
+    1. Clean up the cart after comparing with valid products in DB
+    2. Return the cart after clean up is done
+
+<img src="./assets/S12/272.png" alt="packages" width="800"/>
+
+So this would be a great challenge you can take to add the functionality to clean up your cart on the
+user collection whenever you find out that in get cart, there is a mismatch between the products you
+get back and the products you think you have in your cart.
+
+# S12 | Wrap Up
+---
+
+<img src="./assets/S12/273.png" alt="packages" width="800"/>
+
+# S12 | Useful Resources & Links
+--- 
+
+Attached, you find the source code for this section.
+When using my source code, make sure to run npm install in the extracted folder!
+
+Useful resource:
+
+1. MongoDB Official Docs: https://docs.mongodb.com/manual/core/security-encryption-at-rest/https://docs.mongodb.com/manual/
+
+2. SQL vs NoSQL: https://academind.com/learn/web-dev/sql-vs-nosql/
+
+3. Learn more about MongoDB: https://academind.com/learn/mongodb
+
+# S12 | Two Adjustments (behind the scenes)f
+---
+
+Behind the scenes, two files were deleted:
+
+- order-item.js
+
+- order.js
+
+Why? We simply don't need them anymore, the way we now structured our models.
+
+## [x] Lets Code - 
