@@ -77,7 +77,7 @@
 <img src="./assets/S13/47.png" alt="packages" width="800"/>
 <img src="./assets/S13/48.png" alt="packages" width="800"/> 
 
-# S13 | Adding and Using a User Mode
+# S13 | Adding and Using a User Model
 ---
 <img src="./assets/S13/49.png" alt="packages" width="800"/>
 <img src="./assets/S13/50.png" alt="packages" width="800"/>
@@ -120,3 +120,62 @@ Every product should be assigned to a user
 <img src="./assets/S13/77.png" alt="packages" width="800"/>
 <img src="./assets/S13/78.png" alt="packages" width="800"/>
 <img src="./assets/S13/79.png" alt="packages" width="800"/>
+
+# S13 | Loading the Cart
+---
+<img src="./assets/S13/80.png" alt="packages" width="800"/>
+<img src="./assets/S13/81.png" alt="packages" width="800"/>
+<img src="./assets/S13/82.png" alt="packages" width="800"/>
+<img src="./assets/S13/83.png" alt="packages" width="800"/>
+<img src="./assets/S13/84.png" alt="packages" width="800"/>
+<img src="./assets/S13/85.png" alt="packages" width="800"/>
+<img src="./assets/S13/86.png" alt="packages" width="800"/>
+<img src="./assets/S13/87.png" alt="packages" width="800"/>
+<img src="./assets/S13/88.png" alt="packages" width="800"/>
+<img src="./assets/S13/89.png" alt="packages" width="800"/>
+<img src="./assets/S13/90.png" alt="packages" width="800"/>
+
+# S13 | Deleting Cart Items
+---
+<img src="./assets/S13/90.png" alt="packages" width="800"/>
+<img src="./assets/S13/91.png" alt="packages" width="800"/>
+<img src="./assets/S13/92.png" alt="packages" width="800"/>
+<img src="./assets/S13/93.png" alt="packages" width="800"/>
+<img src="./assets/S13/94.png" alt="packages" width="800"/>
+<img src="./assets/S13/95.png" alt="packages" width="800"/>
+<img src="./assets/S13/96.png" alt="packages" width="800"/>
+
+# S13 | Creating & Getting Orders
+---
+<img src="./assets/S13/97.png" alt="packages" width="800"/>
+<img src="./assets/S13/98.png" alt="packages" width="800"/>
+<img src="./assets/S13/99.png" alt="packages" width="800"/>
+<img src="./assets/S13/100.png" alt="packages" width="800"/>
+<img src="./assets/S13/101.png" alt="packages" width="800"/>
+<img src="./assets/S13/102.png" alt="packages" width="800"/>
+<img src="./assets/S13/103.png" alt="packages" width="800"/>
+<img src="./assets/S13/104.png" alt="packages" width="800"/>
+<img src="./assets/S13/105.png" alt="packages" width="800"/>
+
+# S13 | Storing All Order Related Data
+---
+<img src="./assets/S13/106.png" alt="packages" width="800"/>
+<img src="./assets/S13/107.png" alt="packages" width="800"/>
+<img src="./assets/S13/108.png" alt="packages" width="800"/>
+<img src="./assets/S13/109.png" alt="packages" width="800"/>
+<img src="./assets/S13/110.png" alt="packages" width="800"/>
+<img src="./assets/S13/111.png" alt="packages" width="800"/>
+<img src="./assets/S13/112.png" alt="packages" width="800"/>
+
+
+# S13 | Getting & Displaying the Orders
+---
+<img src="./assets/S13/113.png" alt="packages" width="800"/>
+<img src="./assets/S13/114.png" alt="packages" width="800"/>
+<img src="./assets/S13/115.png" alt="packages" width="800"/>
+<img src="./assets/S13/116.png" alt="packages" width="800"/>
+<img src="./assets/S13/117.png" alt="packages" width="800"/>
+
+
+# S13 | Useful resource:
+Mongoose Official Docs: https://mongoosejs.com/docs/
