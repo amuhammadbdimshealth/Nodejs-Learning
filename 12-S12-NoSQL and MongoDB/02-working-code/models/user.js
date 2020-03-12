@@ -8,6 +8,7 @@ class User {
     this.cart = cart;
     this._id = userId ? mongodb.ObjectId(userId) : null
   }
+
   save() {
     const db = getDb();
     if (!this.userId) {
@@ -30,11 +31,14 @@ class User {
     }
 
   }
+
   deleteFromCart(prodId) {
     const db = getDb();
-    const updatedCart = [...this.cart].filter(cartItem => cartItem.productId.toString() != prodId.toString());
+    const updatedCart = [...this.cart]
+      .filter(cartItem => cartItem.productId.toString() != prodId.toString());
     return db.collection('users').updateOne({ _id: this._id }, { $set: { cart: updatedCart } });
   }
+
   addToCart(product) {
     let updatedCart = [...this.cart];
     const itemIndex = this.cart.findIndex(item => item.productId.toString() == product._id.toString()) // toSting() to match types
@@ -50,7 +54,7 @@ class User {
         quantity: 1
       }
       updatedCart.push(cartItem);
-    }
+    } // cart looks like [ {productId: 1, quantity: 2}, {productId: 2, quantity: 1}, ... ]
 
     // Update this user's cart by inserting the product
     const db = getDb();
@@ -66,7 +70,28 @@ class User {
         return result;
       })
   }
+  /**
+   * clean up the cart in DB
+   * might not be required since cart is always retrieved using getCart()
+   */
+  cleanupCartDB(realProducts) {
+    console.log('Cleaning up Cart');
+    const db = getDb()
+    const cart = realProducts.map(p => {
+      return { productId: p._id, quantity: p.quantity }
+    })
+    return db.collection('users')
+      .updateOne(
+        { _id: this._id },
+        { $set: { cart: cart } }
+      )
+  }
+  /**
+   * getCart() : 
+   * Only Return products which still exist in the product collection 
+   */
   getCart() {
+    console.log("user.getCart() : ", this.cart);
     const db = getDb();
     const productsFromDBPromise = [];
     this.cart.forEach(cartItem => {
@@ -77,7 +102,7 @@ class User {
         .next() // can use Product.findById(prodId) method
       productsFromDBPromise.push(singleProdFromDB)
     })
-    // Once all promises resolves , get the each item's quantity 
+    // Once all promises resolves , get the each item's quantity     
     return Promise.all(productsFromDBPromise)
       .then(productsFromDB => {
         const populatedCartItems =
@@ -90,7 +115,12 @@ class User {
             return { ...productFromDB, quantity: cartItem.quantity };
           })
         // Only Return products which still exist in the product collection 
-        return populatedCartItems.filter(cItem => cItem != null); // [ {title:'Prod1', price:5000, quantity: 2}, ... ]
+        let realProducts = populatedCartItems.filter(cItem => cItem != null); // [ {title:'Prod1', price:5000, quantity: 2}, ... ]
+        // Clean-up DB if cart items does not match products in DB
+        if (this.cart.length != realProducts.length)
+          return this.cleanupCartDB(realProducts).then(() => realProducts).catch(err => console.log(err))
+
+        return realProducts;
       })
   }
   /** 
@@ -108,6 +138,39 @@ class User {
       })
   }
   */
+  addOrder() {
+    console.log("user.addOrder() : ", this.cart);
+    const db = getDb();
+    return this.getCart()
+      .then(populatedCartItems => {
+        const order = {
+          items: populatedCartItems,
+          user: {
+            _id: this._id,
+            name: this.name
+          }
+        }
+        return db
+          .collection('orders')
+          .insertOne(order)
+          .then(result => {
+            // this.cart = []; // empty the user  model cart 
+            return db.collection('users') // empty the cart in the DB
+              .updateOne(
+                { _id: this._id },
+                { $set: { cart: [] } }
+              )
+          })
+      })
+  }
+  getOrders() {
+    const db = getDb();
+    return db.collection('orders')
+      .find({
+        'user._id': this._id
+      })
+      .toArray();
+  }
   static findById(userId) {
     const db = getDb();
     const userObjId = new mongodb.ObjectId(userId)

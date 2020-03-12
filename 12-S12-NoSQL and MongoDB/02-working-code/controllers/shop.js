@@ -68,7 +68,7 @@ exports.getCart = (req, res, next) => {
     });
 };
 exports.getOrders = (req, res, next) => {
-  req.user.getOrders({ include: ['products'] })
+  req.user.getOrders()
     .then(orders => {
       // console.log('ORDER-PRODUCT ==============> ',orders[0].products);
       res.render("shop/orders", {
@@ -106,37 +106,10 @@ exports.postCartDeleteProduct = (req, res, next) => {
     })
     .catch(err => console.log(err));
 };
-
 exports.postOrder = (req, res, next) => {
-  let fetchedCart;
-  req.user.getCart()
-    .then(cart => {
-      fetchedCart = cart;
-      // console.log("postOrder =======> ", "CART =======> ", cart) //prod.id, prod.title, prod.cartItem.quantity);          
-      return cart.getProducts();
-    })
-    .then(products => {
-      products.forEach(prod => {
-        console.log("postOrder =======> ", "CART-PRODUCT =======> ", prod.id, prod.title, prod.cartItem.quantity);
-      })
-      // Create order for the current user
-      const orderPromise = req.user.createOrder()
-        .then(order => {
-          let productsWithQty = products.map(prod => {
-            // Set the the order quantity equal to the cartItem quantity 
-            prod.orderItem = { quantity: prod.cartItem.quantity }
-            return prod;
-          })
-          // Add all products to the order created
-          return order.addProducts(products);
-        })
-      return orderPromise;
-    })
+  req.user.addOrder()
     .then(result => {
-      return fetchedCart.setProducts(null);
-    })
-    .then(result => {
-      res.redirect('/orders');
+      res.redirect('/orders')
     })
     .catch(err => console.log(err));
-}
+};

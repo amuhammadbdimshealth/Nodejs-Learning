@@ -641,7 +641,7 @@ We can store the user information inside the product in 2 ways:
 <img src="./assets/S12/246.png" alt="packages" width="800"/>
 <img src="./assets/S12/247.png" alt="packages" width="800"/>
 
-
+## [x] Lets Code - DONE
 
 # S12 | Adding an Order
 ---
@@ -654,11 +654,14 @@ We can store the user information inside the product in 2 ways:
 <img src="./assets/S12/254.png" alt="packages" width="800"/>
 <img src="./assets/S12/255.png" alt="packages" width="800"/>
 
+## [x] Lets Code - DONE
+
  # S12 | Adding Relational Order Data
 ---
 <img src="./assets/S12/256.png" alt="packages" width="800"/>
 <img src="./assets/S12/257.png" alt="packages" width="800"/>
 <img src="./assets/S12/258.png" alt="packages" width="800"/>
+<img src="./assets/S12/259.png" alt="packages" width="800"/>
 <img src="./assets/S12/260.png" alt="packages" width="800"/>
 <img src="./assets/S12/261.png" alt="packages" width="800"/>
 <img src="./assets/S12/262.png" alt="packages" width="800"/>
@@ -726,4 +729,4 @@ Behind the scenes, two files were deleted:
 
 Why? We simply don't need them anymore, the way we now structured our models.
 
-## [x] Lets Code - 
+## [x] Lets Code - DONE
