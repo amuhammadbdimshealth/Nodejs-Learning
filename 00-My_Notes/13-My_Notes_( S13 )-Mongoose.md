@@ -3,7 +3,7 @@
 
 # S13 | Module Introduction
 ---
-<img src="./assets/S13/1.png" alt="packages" width="800"/>
+<img src="./assets/S13/1.png" alt="packages" width="800"/> 
 
 # S13 | What is Mongoose?
 ---
