@@ -38,7 +38,6 @@ exports.getProduct = (req, res, next) => { //MONGO
     .catch(err => {
       console.log(err);
     });
-  // res.redirect("/");
 };
 exports.getIndex = (req, res, next) => {
   Product.find()
