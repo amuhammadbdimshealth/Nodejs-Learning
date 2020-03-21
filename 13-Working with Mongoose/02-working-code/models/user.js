@@ -1,3 +1,77 @@
+const mongoose = require("mongoose");
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true
+    },
+    email: {
+      type: String,
+      required: true
+    },
+    cart: {
+      items: [
+        {
+          productId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Product",
+            required: true
+          },
+          quantity: { type: Number, required: true }
+        }
+      ]
+    }
+  },
+  { typePojoToMixed: false }
+);
+
+userSchema.methods.addToCart = function(product) {
+  let updatedCartItems = [...this.cart.items];
+  const itemIndex = this.cart.items.findIndex(
+    item => item.productId.toString() == product._id.toString()
+  ); // toSting() to match types
+  const itemAlreadyExistsInCart = itemIndex >= 0;
+
+  if (itemAlreadyExistsInCart) {
+    // Increase Item quantity
+    updatedCartItems[itemIndex].quantity++;
+  } else {
+    // Add new item to the user cart for the first time
+    let cartItem = {
+      productId: product._id,
+      quantity: 1
+    };
+    updatedCartItems.push(cartItem);
+  } // cart.items looks like [ {productId: 1, quantity: 2}, {productId: 2, quantity: 1}, ... ]
+
+  console.log("36-updatedCartItems", updatedCartItems);
+  this.cart.items = updatedCartItems;
+  return this.save();
+
+  // Update this user's cart by inserting the product in DB
+  /*
+  const db = getDb();
+  return db.collection('users')    
+    .updateOne(
+      { _id: this._id },
+      {
+        $set: { cart: updatedCart } // (Update only the cart property of the Product)
+      })
+    */
+};
+
+userSchema.methods.deleteFromCart = function(prodId) {
+  const updatedCartItems = [...this.cart.items]
+    .filter(cartItem => cartItem.productId.toString() != prodId.toString());
+  this.cart.items = updatedCartItems;
+  return this.save();
+  // return db.collection('users').updateOne({ _id: this._id }, { $set: { cart: updatedCartItems } });
+}
+
+const userModel = mongoose.model("User", userSchema);
+module.exports = userModel;
+
+/*
 const getDb = require('../util/database').getDb;
 const mongodb = require('mongodb');
 
@@ -70,10 +144,9 @@ class User {
         return result;
       })
   }
-  /**
-   * clean up the cart in DB
-   * might not be required since cart is always retrieved using getCart()
-   */
+
+  // * clean up the cart in DB
+  // * might not be required since cart is always retrieved using getCart()
   cleanupCartDB(realProducts) {
     console.log('Cleaning up Cart');
     const db = getDb()
@@ -86,10 +159,9 @@ class User {
         { $set: { cart: cart } }
       )
   }
-  /**
-   * getCart() : 
-   * Only Return products which still exist in the product collection 
-   */
+
+  // * getCart() : 
+  // * Only Return products which still exist in the product collection 
   getCart() {
     console.log("user.getCart() : ", this.cart);
     const db = getDb();
@@ -123,21 +195,7 @@ class User {
         return realProducts;
       })
   }
-  /** 
-  # Alternate approach 
-   * using mongodb '$in' operator
-   */
-  /*
-  getCart() {
-    const db = getDb();
-    return db.collection('products')
-      .find({ _id: { $in: productIds } })
-      .toArray()
-      .then(products => {
-        //...
-      })
-  }
-  */
+
   addOrder() {
     console.log("user.addOrder() : ", this.cart);
     const db = getDb();
@@ -163,6 +221,7 @@ class User {
           })
       })
   }
+
   getOrders() {
     const db = getDb();
     return db.collection('orders')
@@ -171,6 +230,7 @@ class User {
       })
       .toArray();
   }
+
   static findById(userId) {
     const db = getDb();
     const userObjId = new mongodb.ObjectId(userId)
@@ -179,5 +239,6 @@ class User {
       .next();
   }
 }
-
 module.exports = User;
+
+*/

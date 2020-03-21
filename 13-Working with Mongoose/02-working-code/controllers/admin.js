@@ -37,7 +37,10 @@ exports.getEditProduct = (req, res, next) => {
 
 exports.getProducts = (req, res, next) => { //MONGO
   Product.find()
+    // .select('title price')
+    .populate({ path: 'userid', select: 'name' })
     .then(products => {
+      console.log('42-getProducts', products);
       res.render("admin/products", {
         prods: products,
         pageTitle: "Admin Products",
@@ -56,7 +59,8 @@ exports.postAddProduct = (req, res, next) => { //MONGO
     title: title,
     imageUrl: imageUrl,
     description: description,
-    price: price
+    price: price,
+    userid: req.user._id
   })
   product.save()
     .then(result => {
