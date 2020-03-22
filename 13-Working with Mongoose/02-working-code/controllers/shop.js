@@ -55,27 +55,34 @@ exports.getIndex = (req, res, next) => {
     });
 };
 exports.getCart = (req, res, next) => {
-  /** See the link below to understand why we need execPopulate 
+  /** See the link below to understand why we need execPopulate
    *  for already fetched document like here req.user we need this
    *  https://stackoverflow.com/questions/29430542/populating-on-an-already-fetched-document-is-it-possible-and-if-so-how
    */
   req.user
-  .populate({ path: "cart.items.productId" })
-  .execPopulate()
-  .then(pUser => {
-    console.log('63-cartItems',pUser.cart);
-    const cartItems = pUser.cart.items;
-    const totalPrice = cartItems.reduce((total, cartItem) => total + cartItem.quantity * cartItem.productId.price, 0)
-    const cart = { cartItems: cartItems, totalPrice: totalPrice }
-    res.render("shop/cart", {
-      path: "/cart",
-      pageTitle: "Your Cart",
-      cart: cart
+    .populate({ path: "cart.items.productId" })
+    .execPopulate()
+    .then(pUser => {
+      console.log("63-cartItems", pUser.cart);
+      const cartItems = pUser.cart.items;
+      const totalPrice = cartItems.reduce(
+        (total, cartItem) =>
+          total + cartItem.quantity * cartItem.productId.price,
+        0
+      );
+      const cart = { cartItems: cartItems, totalPrice: totalPrice };
+      res.render("shop/cart", {
+        path: "/cart",
+        pageTitle: "Your Cart",
+        cart: cart
+      });
     });
-  });
 };
 exports.getOrders = (req, res, next) => {
-  req.user.getOrders().then(orders => {
+  Order.find({
+    'user.userId' : req.user._id
+  })
+  .then(orders => {
     // console.log('ORDER-PRODUCT ==============> ',orders[0].products);
     res.render("shop/orders", {
       orders: orders,
@@ -108,24 +115,39 @@ exports.postCartDeleteProduct = (req, res, next) => {
   req.user
     .deleteFromCart(prodId)
     .then(result => {
-      console.log("111-DELETED CART ITEM...", result,'END-111');
+      console.log("111-DELETED CART ITEM...", result, "END-111");
       res.redirect("/cart");
     })
     .catch(err => console.log(err));
 };
 exports.postOrder = (req, res, next) => {
-  const userCartItems = req.user.cart.items; 
-  const order = new Order({
-    user: { 
-      userId: req.user._id
-    },
-    products: userCartItems
-  })
-  order.save()
-  .then(result => {
-    console.log('124-ORDER SAVED', result, '124-END');
-    res.redirect('/');
-  })
+  req.user
+    .populate("cart.items.productId")
+    .execPopulate()
+    .then(pUser => {
+      const userCartItems = pUser.cart.items.map(item => {
+        const mItem = {
+          quantity: item.quantity,
+          product: { ...item.productId._doc }
+        };
+        return mItem;
+      });
+      // const userCartItems = pUser.cart.items;
+      console.log("126-userCartItems", userCartItems);
+      const order = new Order({
+        user: {
+          userId: req.user._id,
+          name: req.user.name
+        },
+        products: userCartItems
+      });
+      return order.save();
+    })
+    .then(result => {
+      return req.user.clearCart();
+    })
+    .then(() => res.redirect("/orders"));
+
   // req.user
   //   .addOrder()
   //   .then(result => {

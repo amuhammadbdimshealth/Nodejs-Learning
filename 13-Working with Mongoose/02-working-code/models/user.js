@@ -61,38 +61,41 @@ userSchema.methods.addToCart = function(product) {
 };
 
 userSchema.methods.deleteFromCart = function(prodId) {
-  const updatedCartItems = [...this.cart.items]
-    .filter(cartItem => cartItem.productId.toString() != prodId.toString());
+  const updatedCartItems = [...this.cart.items].filter(
+    cartItem => cartItem.productId.toString() != prodId.toString()
+  );
   this.cart.items = updatedCartItems;
   return this.save();
   // return db.collection('users').updateOne({ _id: this._id }, { $set: { cart: updatedCartItems } });
-}
+};
+
+userSchema.methods.clearCart = function() {
+  this.cart = { items: [] };
+  return this.save();
+};
 
 userSchema.methods.addOrder = function() {
   console.log("user.addOrder() : ", this.cart);
   const db = getDb();
-  return this.getCart()
-    .then(populatedCartItems => {
-      const order = {
-        items: populatedCartItems,
-        user: {
-          _id: this._id,
-          name: this.name
-        }
+  return this.getCart().then(populatedCartItems => {
+    const order = {
+      items: populatedCartItems,
+      user: {
+        _id: this._id,
+        name: this.name
       }
-      return db
-        .collection('orders')
-        .insertOne(order)
-        .then(result => {
-          // this.cart = []; // empty the user  model cart 
-          return db.collection('users') // empty the cart in the DB
-            .updateOne(
-              { _id: this._id },
-              { $set: { cart: [] } }
-            )
-        })
-    })
-}
+    };
+    return db
+      .collection("orders")
+      .insertOne(order)
+      .then(result => {
+        // this.cart = []; // empty the user  model cart
+        return db
+          .collection("users") // empty the cart in the DB
+          .updateOne({ _id: this._id }, { $set: { cart: [] } });
+      });
+  });
+};
 
 const userModel = mongoose.model("User", userSchema);
 module.exports = userModel;
@@ -256,12 +259,6 @@ class User {
       })
       .toArray();
   }
-    const db = getDb();
-    return db
-      .collection('products').find().toArray()
-      .then(products => {
-        // console.log('Model',products);
-        return products;
 
   static findById(userId) {
     const db = getDb();

@@ -14,11 +14,11 @@
                     <%= order._id %>
                   </h1>
                   <ul>
-                    <% for(let product of order.items) { %>
+                    <% for(let product of order.products) { %>
                       <li>
-                        <%= product.title %> (
-                          <%= product.quantity %>)</li>
-                      <% } %>
+                        <%= product.product.title %> (
+                          <%= product.quantity %> )</li>
+                      <% } %> 
                   </ul>
                 </li>
                 <% } %>
