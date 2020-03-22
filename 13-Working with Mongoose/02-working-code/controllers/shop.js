@@ -1,7 +1,7 @@
 const Product = require("../models/product");
 const User = require("../models/user");
 // const Cart = require("../models/cart");
-// const Order = require("../models/order");
+const Order = require("../models/order");
 // UTILITIES
 
 // GET REQUEST HANDLERS
@@ -114,10 +114,22 @@ exports.postCartDeleteProduct = (req, res, next) => {
     .catch(err => console.log(err));
 };
 exports.postOrder = (req, res, next) => {
-  req.user
-    .addOrder()
-    .then(result => {
-      res.redirect("/orders");
-    })
-    .catch(err => console.log(err));
+  const userCartItems = req.user.cart.items; 
+  const order = new Order({
+    user: { 
+      userId: req.user._id
+    },
+    products: userCartItems
+  })
+  order.save()
+  .then(result => {
+    console.log('124-ORDER SAVED', result, '124-END');
+    res.redirect('/');
+  })
+  // req.user
+  //   .addOrder()
+  //   .then(result => {
+  //     res.redirect("/orders");
+  //   })
+  //   .catch(err => console.log(err));
 };
