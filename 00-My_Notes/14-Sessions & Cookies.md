@@ -62,6 +62,16 @@ So in the last lecture we edit this login form which you can reach by clicking o
 # S14 | Setting a Cookie
 ---
 <img src="./assets/S14/26.png" alt="packages" width="800"/>
+- Please see Section-6 (Sharing Data Across Requests and Across Users) for details on how to achive this. 
+
+Using global variable solution to show the navigations
+<img src="./assets/S14/73.png" alt="packages" width="800"/>
+<img src="./assets/S14/74.png" alt="packages" width="800"/>
+<img src="./assets/S14/75.png" alt="packages" width="800"/>
+<img src="./assets/S14/76.png" alt="packages" width="800"/>
+<img src="./assets/S14/77.png" alt="packages" width="800"/>
+
+
 <img src="./assets/S14/27.png" alt="packages" width="800"/>
 <img src="./assets/S14/28.png" alt="packages" width="800"/>
 <img src="./assets/S14/29.png" alt="packages" width="800"/>

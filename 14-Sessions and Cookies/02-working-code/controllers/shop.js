@@ -2,7 +2,9 @@ const Product = require("../models/product");
 const User = require("../models/user");
 // const Cart = require("../models/cart");
 const Order = require("../models/order");
+
 // UTILITIES
+const globalServerVariables = require('../util/global-variables');
 
 // GET REQUEST HANDLERS
 exports.getProducts = (req, res, next) => {
@@ -13,7 +15,8 @@ exports.getProducts = (req, res, next) => {
       res.render("shop/product-list", {
         prods: products,
         pageTitle: "All Products",
-        path: "/products"
+        path: "/products",
+        isAuthenticated: req.isLoggedIn
       });
     })
     .catch(err => {
@@ -33,7 +36,8 @@ exports.getProduct = (req, res, next) => {
       res.render("shop/product-detail", {
         product: product,
         pageTitle: product.title,
-        path: "/products"
+        path: "/products",
+        isAuthenticated: req.isLoggedIn
       });
     })
     .catch(err => {
@@ -47,7 +51,9 @@ exports.getIndex = (req, res, next) => {
       res.render("shop/index", {
         prods: products,
         pageTitle: "Shop",
-        path: "/"
+        path: "/",
+        isAuthenticated: globalServerVariables.isAuthenticated
+        // isAuthenticated: req.isLoggedIn
       });
     })
     .catch(err => {
@@ -74,7 +80,8 @@ exports.getCart = (req, res, next) => {
       res.render("shop/cart", {
         path: "/cart",
         pageTitle: "Your Cart",
-        cart: cart
+        cart: cart,
+        isAuthenticated: req.isLoggedIn
       });
     });
 };
@@ -87,14 +94,16 @@ exports.getOrders = (req, res, next) => {
     res.render("shop/orders", {
       orders: orders,
       pageTitle: "Your Orders",
-      path: "/orders"
+      path: "/orders",
+      isAuthenticated: req.isLoggedIn
     });
   });
 };
 exports.getCheckout = (req, res, next) => {
   res.render("shop/checkout", {
     pageTitle: "Checkout",
-    path: "/checkout"
+    path: "/checkout",
+    isAuthenticated: req.isLoggedIn
   });
 };
 // POST REQUEST HANDLERS
