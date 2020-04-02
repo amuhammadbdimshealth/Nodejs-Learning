@@ -45,6 +45,12 @@ exports.getProduct = (req, res, next) => {
     });
 };
 exports.getIndex = (req, res, next) => {
+  const loggedInCookie = req
+    .get("Cookie")
+    .split(";")[1]
+    .trim()
+    .split("=")[1];  
+
   Product.find()
     .then(products => {
       console.log("Controller_Index->", products);
@@ -52,8 +58,9 @@ exports.getIndex = (req, res, next) => {
         prods: products,
         pageTitle: "Shop",
         path: "/",
-        isAuthenticated: globalServerVariables.isAuthenticated
+        // isAuthenticated: globalServerVariables.isAuthenticated
         // isAuthenticated: req.isLoggedIn
+        isAuthenticated: loggedInCookie
       });
     })
     .catch(err => {

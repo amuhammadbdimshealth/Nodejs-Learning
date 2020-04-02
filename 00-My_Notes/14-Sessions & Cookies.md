@@ -61,6 +61,19 @@ So in the last lecture we edit this login form which you can reach by clicking o
 
 # S14 | Setting a Cookie
 ---
+## req.get(field)
+Returns the specified HTTP request header field (case-insensitive match). The Referrer and Referer fields are interchangeable.
+```js
+req.get('Content-Type');
+// => "text/plain"
+
+req.get('content-type');
+// => "text/plain"
+
+req.get('Something');
+// => undefined
+```
+
 <img src="./assets/S14/26.png" alt="packages" width="800"/>
 - Please see Section-6 (Sharing Data Across Requests and Across Users) for details on how to achive this. 
 
