@@ -55,7 +55,7 @@ exports.getIndex = (req, res, next) => {
 
   Product.find()
     .then(products => {
-      console.log("Controller_Index->", products);
+      // console.log("Controller_Index->", products);
       res.render("shop/index", {
         prods: products,
         pageTitle: "Shop",

@@ -22,7 +22,7 @@ const getLogin = (req, res, next) => {
 const postLogin = (req, res, next) => {
   // globalServerVariables.isAuthenticated = true;
   // req.isLoggedIn = true;
-  res.setHeader("Set-Cookie", "loggedIn=true");
+  res.setHeader("Set-Cookie", "loggedIn=true; Max-Age=20; HttpOnly");
   res.redirect("/");
 };
 
