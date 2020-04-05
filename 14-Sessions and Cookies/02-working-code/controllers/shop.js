@@ -5,6 +5,7 @@ const Order = require("../models/order");
 
 // UTILITIES
 const globalServerVariables = require('../util/global-variables');
+const globalFunctions = require('../util/global-functions');
 
 // GET REQUEST HANDLERS
 exports.getProducts = (req, res, next) => {
@@ -45,11 +46,12 @@ exports.getProduct = (req, res, next) => {
     });
 };
 exports.getIndex = (req, res, next) => {
-  const loggedInCookie = req
-    .get("Cookie")
-    .split(";")[1]
-    .trim()
-    .split("=")[1];  
+  const loggedInCookie = globalFunctions.getCookie(req);
+  // req
+  //   .get("Cookie")
+  //   .split(";")[1]
+  //   .trim()
+  //   .split("=")[1] == 'true';  
 
   Product.find()
     .then(products => {

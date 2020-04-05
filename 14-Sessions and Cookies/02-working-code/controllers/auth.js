@@ -1,12 +1,14 @@
 const globalServerVariables = require("../util/global-variables");
+const globalFunctions = require('../util/global-functions');
 
 const getLogin = (req, res, next) => {
   // console.log('2-req.isLoggedIn: ',req.isLoggedIn);
-  const loggedInCookie = req
-    .get("Cookie")
-    .split(";")[1]
-    .trim()
-    .split("=")[1];
+  const loggedInCookie = globalFunctions.getCookie(req);
+  // req
+  //   .get("Cookie")
+  //   .split(";")[1]
+  //   .trim()
+  //   .split("=")[1] == 'true';
   console.log('5-req.get("Cookie") : ', loggedInCookie);
 
   res.render("auth//login", {
