@@ -107,6 +107,12 @@ So in the last lecture I showed you how you can set a cookie and some a bit too 
 
 # S14 | Configuring Cookies
 ---
+
+## See the doc link here
+https://devdocs.io/http/cookies
+<img src="./assets/S14/79.png" alt="packages" width="800"/>
+<img src="./assets/S14/80.png" alt="packages" width="800"/>
+
 For example for tracking users, cookies is a popular instrument.
 Because as you can for example see with the cookies I have here, the cookies don't only have to relate
 to your page. A cookie can also be sent to another page and that is a common instrument in tracking.
@@ -148,6 +154,9 @@ To implement a session, we'll need another third party package, we'll need anoth
 **Check out this site to read more**
 https://github.com/expressjs/session#compatible-session-stores
 <img src="./assets/S14/78.png" alt="packages" width="800"/>
+<img src="./assets/S14/81.png" alt="packages" width="800"/>
+
+
 
 There we register another middleware with app use and to app use, we pass session and we execute this as a function and to the function, we pass a javascript object where we configure the session setup. For example we need to set a secret, this will be used for signing the hash which secretly stores our ID in the cookie. So here I'll set a secret, you can enter any text here, it should typically be a long string, I'll name it my secret but again in production, this should be a long string value. Then you should add the re-save option and set this to false, this means that the session will not be saved on every request that is done, so on every response that is sent but only if something changed in the session., this will obviously improve performance and so on. Also there is the save uninitialized value which you should set to false because this will also basically ensure that no session gets saved for a request where it doesn't need to be saved because nothing was changed about it and that is it. These are the core things you need to set. You could for example also configure the session cookie, you could give it a max age by setting a date or add the expires key, so you can configure that cookie but you can also go with the default settings. And with that, the session middleware is initialized and we're now ready to use the session. Now let's start using it in the next lecture.
 
