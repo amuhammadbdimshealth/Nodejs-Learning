@@ -1,14 +1,14 @@
+// Imports
 const path = require("path");
 
 const express = require("express");
 const bodyParser = require("body-parser");
+const session = require("express-session");
 
 const errorController = require("./controllers/error");
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
-// const mongoConnect = require("./util/database").mongoConnect;
-// const getDb = require("./util/database").getDb;
 const User = require("./models/user");
 const mongoose = require("mongoose");
 
@@ -17,8 +17,14 @@ const app = express();
 app.set("view engine", "ejs");
 app.set("views", "views");
 
+// Middlewares
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
+app.use(session({
+  secret: 'mysecret',
+  resave: false,
+  saveUninitialized: false
+}))
 
 // Store the currently logged-in user in the request object
 app.use((req, res, next) => {
@@ -32,10 +38,12 @@ app.use((req, res, next) => {
     .catch(err => console.log(err));
 });
 
+// Routes
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
+// DB url
 const url = `mongodb+srv://amuhammad:24Aug1989@arif-cluster0-r4goo.mongodb.net/shopMongoose?retryWrites=true&w=majority`;
 mongoose
   .connect(url)
