@@ -12,6 +12,6 @@ exports.getCookie = req => {
       .get("Cookie")
       .split(";")[1]
       .trim()
-      .split("=")[1] == 'true' : false;
+      .split("=")[1] == 'true' : 'false';
     return loggedInCookie;
 };
