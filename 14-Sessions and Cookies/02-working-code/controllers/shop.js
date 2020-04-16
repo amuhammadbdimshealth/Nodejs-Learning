@@ -17,7 +17,7 @@ exports.getProducts = (req, res, next) => {
         prods: products,
         pageTitle: "All Products",
         path: "/products",
-        isAuthenticated: req.isLoggedIn
+        isAuthenticated: req.session.isLoggedIn
       });
     })
     .catch(err => {
@@ -38,7 +38,7 @@ exports.getProduct = (req, res, next) => {
         product: product,
         pageTitle: product.title,
         path: "/products",
-        isAuthenticated: req.isLoggedIn
+        isAuthenticated: req.session.isLoggedIn
       });
     })
     .catch(err => {
@@ -60,7 +60,7 @@ exports.getIndex = (req, res, next) => {
         prods: products,
         pageTitle: "Shop",
         path: "/",
-        // isAuthenticated: globalServerVariables.isAuthenticated
+        // isAuthenticatedsession.: globalServerVariables.isAuthenticated
         // isAuthenticated: req.isLoggedIn
         isAuthenticated: loggedInCookie
       });
@@ -71,10 +71,10 @@ exports.getIndex = (req, res, next) => {
 };
 exports.getCart = (req, res, next) => {
   /** See the link below to understand why we need execPopulate
-   *  for already fetched document like here req.user we need this
+   *  for already fetched document like here req.session.user we need this
    *  https://stackoverflow.com/questions/29430542/populating-on-an-already-fetched-document-is-it-possible-and-if-so-how
    */
-  req.user
+  req.session.user
     .populate({ path: "cart.items.productId" })
     .execPopulate()
     .then(pUser => {
@@ -90,13 +90,13 @@ exports.getCart = (req, res, next) => {
         path: "/cart",
         pageTitle: "Your Cart",
         cart: cart,
-        isAuthenticated: req.isLoggedIn
+        isAuthenticated: req.session.isLoggedIn
       });
     });
 };
 exports.getOrders = (req, res, next) => {
   Order.find({
-    'user.userId' : req.user._id
+    'user.userId' : req.session.user._id
   })
   .then(orders => {
     // console.log('ORDER-PRODUCT ==============> ',orders[0].products);
@@ -104,7 +104,7 @@ exports.getOrders = (req, res, next) => {
       orders: orders,
       pageTitle: "Your Orders",
       path: "/orders",
-      isAuthenticated: req.isLoggedIn
+      isAuthenticated: req.session.isLoggedIn
     });
   });
 };
@@ -112,7 +112,7 @@ exports.getCheckout = (req, res, next) => {
   res.render("shop/checkout", {
     pageTitle: "Checkout",
     path: "/checkout",
-    isAuthenticated: req.isLoggedIn
+    isAuthenticated: req.session.isLoggedIn
   });
 };
 // POST REQUEST HANDLERS
@@ -120,7 +120,7 @@ exports.postCart = (req, res, next) => {
   const prodId = req.body.productId;
   Product.findById(prodId)
     .then(product => {
-      return req.user.addToCart(product);
+      return req.session.user.addToCart(product);
     })
     .then(result => {
       res.redirect("/cart");
@@ -130,7 +130,7 @@ exports.postCart = (req, res, next) => {
 exports.postCartDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
   console.log("DELETE CART ITEM...", prodId);
-  req.user
+  req.session.user
     .deleteFromCart(prodId)
     .then(result => {
       console.log("111-DELETED CART ITEM...", result, "END-111");
@@ -139,7 +139,7 @@ exports.postCartDeleteProduct = (req, res, next) => {
     .catch(err => console.log(err));
 };
 exports.postOrder = (req, res, next) => {
-  req.user
+  req.session.user
     .populate("cart.items.productId")
     .execPopulate()
     .then(pUser => {
@@ -154,19 +154,19 @@ exports.postOrder = (req, res, next) => {
       console.log("126-userCartItems", userCartItems);
       const order = new Order({
         user: {
-          userId: req.user._id,
-          name: req.user.name
+          userId: req.session.user._id,
+          name: req.session.user.name
         },
         products: userCartItems
       });
       return order.save();
     })
     .then(result => {
-      return req.user.clearCart();
+      return req.session.user.clearCart();
     })
     .then(() => res.redirect("/orders"));
 
-  // req.user
+  // req.session.user
   //   .addOrder()
   //   .then(result => {
   //     res.redirect("/orders");

@@ -46,6 +46,7 @@ app.use(session({
 }))
 
 // Store the currently logged-in user in the request object
+/*
 app.use((req, res, next) => {
   User.findById("5e720626851b941b94fad304")
   .then(user => {
@@ -56,6 +57,7 @@ app.use((req, res, next) => {
   })
   .catch(err => console.log(err));
 });
+*/
 
 // Routes
 app.use("/admin", adminRoutes);
@@ -81,3 +83,6 @@ mongoose
     app.listen(4000);
   })
   .catch(err => console.log(err));
+
+// module.exports = store;
+

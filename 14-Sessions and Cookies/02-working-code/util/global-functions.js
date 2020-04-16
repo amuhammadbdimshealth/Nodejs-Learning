@@ -1,10 +1,11 @@
+const store = require('../app');
 exports.getCookie = (req) => {
   const loggedInCookieExists = req.get("Cookie")
     ? req
         .get("Cookie")
         .split(";")
         .find((cookie) => {
-          console.log("cookie: ", cookie);
+          console.log("1-cookie: ", cookie);
           if (cookie) return cookie.trim().split("=")[0] == "loggedIn";
         })
     : false;
@@ -14,7 +15,7 @@ exports.getCookie = (req) => {
         .get("Cookie")
         .split(";")
         .find((cookie) => {
-          console.log("cookie: ", cookie);
+          console.log("2-cookie: ", cookie);
           if (cookie) return cookie.trim().split("=")[0] == "loggedIn";
         })
     : null;
@@ -23,3 +24,9 @@ exports.getCookie = (req) => {
     : false;
   return loggedInCookieValue;
 };
+
+/*
+exports.getsessionUser = (req) => {
+  return store.get(req.session.id, ()=>console.log('AAAA'))
+}
+*/
