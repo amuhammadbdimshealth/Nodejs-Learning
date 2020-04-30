@@ -62,7 +62,8 @@ exports.getIndex = (req, res, next) => {
         path: "/",
         // isAuthenticatedsession.: globalServerVariables.isAuthenticated
         // isAuthenticated: req.isLoggedIn
-        isAuthenticated: loggedInCookie
+        // isAuthenticated: loggedInCookie
+        isAuthenticated: req.session.isLoggedIn
       });
     })
     .catch(err => {
