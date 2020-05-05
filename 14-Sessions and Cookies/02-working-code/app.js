@@ -45,19 +45,20 @@ app.use(session({
   store: store  
 }))
 
-// Store the currently logged-in user in the request object
-/*
+// Store the currently logged-in user in the request object from the session
 app.use((req, res, next) => {
-  User.findById("5e720626851b941b94fad304")
-  .then(user => {
-    // const { name, email, cart, _id } = user //  This use is just an object from DB without any Class methods
-    // const userModel = new User(name, email, cart, _id); // This user will possess all the Class methods
-    req.user = user; //mongoose model. we do not need to create user object again
+  if(req.session.user) {
+    User.findById(req.session.user._id)
+    .then(user => {    
+      req.user = user; //mongoose model. we do not need to create user object again
+      next();
+    })
+    .catch(err => console.log(err));
+  }else{
     next();
-  })
-  .catch(err => console.log(err));
+  }
 });
-*/
+
 
 // Routes
 app.use("/admin", adminRoutes);

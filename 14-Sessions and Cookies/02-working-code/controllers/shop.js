@@ -75,7 +75,7 @@ exports.getCart = (req, res, next) => {
    *  for already fetched document like here req.session.user we need this
    *  https://stackoverflow.com/questions/29430542/populating-on-an-already-fetched-document-is-it-possible-and-if-so-how
    */
-  req.session.user
+  req.user
     .populate({ path: "cart.items.productId" })
     .execPopulate()
     .then(pUser => {
@@ -97,7 +97,7 @@ exports.getCart = (req, res, next) => {
 };
 exports.getOrders = (req, res, next) => {
   Order.find({
-    'user.userId' : req.session.user._id
+    'user.userId' : req.user._id
   })
   .then(orders => {
     // console.log('ORDER-PRODUCT ==============> ',orders[0].products);
@@ -121,7 +121,7 @@ exports.postCart = (req, res, next) => {
   const prodId = req.body.productId;
   Product.findById(prodId)
     .then(product => {
-      return req.session.user.addToCart(product);
+      return req.user.addToCart(product);
     })
     .then(result => {
       res.redirect("/cart");
@@ -131,7 +131,7 @@ exports.postCart = (req, res, next) => {
 exports.postCartDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
   console.log("DELETE CART ITEM...", prodId);
-  req.session.user
+  req.user
     .deleteFromCart(prodId)
     .then(result => {
       console.log("111-DELETED CART ITEM...", result, "END-111");
@@ -140,7 +140,7 @@ exports.postCartDeleteProduct = (req, res, next) => {
     .catch(err => console.log(err));
 };
 exports.postOrder = (req, res, next) => {
-  req.session.user
+  req.user
     .populate("cart.items.productId")
     .execPopulate()
     .then(pUser => {
@@ -155,19 +155,19 @@ exports.postOrder = (req, res, next) => {
       console.log("126-userCartItems", userCartItems);
       const order = new Order({
         user: {
-          userId: req.session.user._id,
-          name: req.session.user.name
+          userId: req.user._id,
+          name: req.user.name
         },
         products: userCartItems
       });
       return order.save();
     })
     .then(result => {
-      return req.session.user.clearCart();
+      return req.user.clearCart();
     })
     .then(() => res.redirect("/orders"));
 
-  // req.session.user
+  // req.user
   //   .addOrder()
   //   .then(result => {
   //     res.redirect("/orders");

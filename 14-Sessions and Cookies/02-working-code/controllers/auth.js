@@ -27,12 +27,17 @@ const postLogin = (req, res, next) => {
   const { email, password } = req.body;
   User.findOne({ email: email })
     .then((user) => {
-      if(user){
+      if(!user){
+        res.redirect("/");
+      }else {
         console.log('user found :', user.email)
         req.session.user = user
         req.session.isLoggedIn = true;
+        req.session.save(err => {
+          console.log(err);
+          res.redirect("/"); //redirect only when session has been saved
+        })
       }
-      res.redirect("/");
       // else throw new Error('User not found')
     })
     .catch((err) => console.log(err));
