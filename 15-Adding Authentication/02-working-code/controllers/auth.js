@@ -6,20 +6,42 @@ const getSignup = (req, res, next) => {
   res.render("auth/signup", {
     path: "/signup",
     pageTitle: "Signup",
-    isAuthenticated: false
-  })
-}
+    isAuthenticated: false,
+  });
+};
 const postSignup = (req, res, next) => {
-   console.log(req.body);
-}
+  const { email, password, confirmPassword } = req.body;
+  console.log(email, password, confirmPassword);
+  User.findOne({ email: email })
+    .then((userDoc) => {
+      if (!userDoc) {
+        //create user
+        const user = new User({
+          email: email,
+          password: password,
+          cart: { items: [] },
+        });
+        return user.save();
+      } else {
+        // redirect to the signup page
+        res.redirect("/signup");
+      }
+    })
+    .then((result) => {
+      res.redirect("/login");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 const getLogin = (req, res, next) => {
   // console.log('2-req.isLoggedIn: ',req.isLoggedIn);
   const loggedInCookie = globalFunctions.getCookie(req);
   console.log('8-req.get("Cookie") : ', loggedInCookie);
 
-  console.log("9-req.session.isLoggedIn : ", req.session.isLoggedIn)
-  console.log("10-req.session.user : ", req.session.user)
-  console.log("11-req.session.ID : ", req.session.id)
+  console.log("9-req.session.isLoggedIn : ", req.session.isLoggedIn);
+  console.log("10-req.session.user : ", req.session.user);
+  console.log("11-req.session.ID : ", req.session.id);
 
   res.render("auth/login", {
     path: "/login",
@@ -37,16 +59,16 @@ const postLogin = (req, res, next) => {
   const { email, password } = req.body;
   User.findOne({ email: email })
     .then((user) => {
-      if(!user){
+      if (!user) {
         res.redirect("/");
-      }else {
-        console.log('user found :', user.email)
-        req.session.user = user
+      } else {
+        console.log("user found :", user.email);
+        req.session.user = user;
         req.session.isLoggedIn = true;
-        req.session.save(err => {
+        req.session.save((err) => {
           console.log(err);
           res.redirect("/"); //redirect only when session has been saved
-        })
+        });
       }
       // else throw new Error('User not found')
     })
@@ -54,17 +76,17 @@ const postLogin = (req, res, next) => {
 };
 
 const postLogout = (req, res, next) => {
-  req.session.destroy(err => {
-    console.log('LOGOUT...')    
+  req.session.destroy((err) => {
+    console.log("LOGOUT...");
     console.log(err);
-    res.redirect('/');
+    res.redirect("/");
   });
-}
+};
 
 module.exports = {
   getLogin,
   postLogin,
   postLogout,
   getSignup,
-  postSignup
+  postSignup,
 };
