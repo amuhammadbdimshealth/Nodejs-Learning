@@ -63,7 +63,7 @@ exports.postAddProduct = (req, res, next) => { //MONGO
     imageUrl: imageUrl,
     description: description,
     price: price,
-    userid: req.session.user._id
+    userid: req.user._id
   })
   product.save()
     .then(result => {

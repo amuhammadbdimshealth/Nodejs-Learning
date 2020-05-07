@@ -2,6 +2,16 @@ const globalServerVariables = require("../util/global-variables");
 const globalFunctions = require("../util/global-functions");
 const User = require("../models/user");
 
+const getSignup = (req, res, next) => {
+  res.render("auth/signup", {
+    path: "/signup",
+    pageTitle: "Signup",
+    isAuthenticated: false
+  })
+}
+const postSignup = (req, res, next) => {
+   console.log(req.body);
+}
 const getLogin = (req, res, next) => {
   // console.log('2-req.isLoggedIn: ',req.isLoggedIn);
   const loggedInCookie = globalFunctions.getCookie(req);
@@ -11,7 +21,7 @@ const getLogin = (req, res, next) => {
   console.log("10-req.session.user : ", req.session.user)
   console.log("11-req.session.ID : ", req.session.id)
 
-  res.render("auth//login", {
+  res.render("auth/login", {
     path: "/login",
     pageTitle: "Login",
     // isAuthenticated: globalServerVariables.isAuthenticated
@@ -27,18 +37,34 @@ const postLogin = (req, res, next) => {
   const { email, password } = req.body;
   User.findOne({ email: email })
     .then((user) => {
-      if(user){
+      if(!user){
+        res.redirect("/");
+      }else {
         console.log('user found :', user.email)
         req.session.user = user
         req.session.isLoggedIn = true;
+        req.session.save(err => {
+          console.log(err);
+          res.redirect("/"); //redirect only when session has been saved
+        })
       }
-      res.redirect("/");
       // else throw new Error('User not found')
     })
     .catch((err) => console.log(err));
 };
 
+const postLogout = (req, res, next) => {
+  req.session.destroy(err => {
+    console.log('LOGOUT...')    
+    console.log(err);
+    res.redirect('/');
+  });
+}
+
 module.exports = {
   getLogin,
   postLogin,
+  postLogout,
+  getSignup,
+  postSignup
 };
