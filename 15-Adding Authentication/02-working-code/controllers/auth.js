@@ -21,14 +21,13 @@ const postSignup = (req, res, next) => {
           password: password,
           cart: { items: [] },
         });
-        return user.save();
+        return user.save().then((result) => {
+          res.redirect("/login");
+        });
       } else {
         // redirect to the signup page
         res.redirect("/signup");
       }
-    })
-    .then((result) => {
-      res.redirect("/login");
     })
     .catch((err) => {
       console.log(err);
