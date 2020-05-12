@@ -1,6 +1,7 @@
 const globalServerVariables = require("../util/global-variables");
 const globalFunctions = require("../util/global-functions");
 const User = require("../models/user");
+const bcrypt = require("bcryptjs");
 
 const getSignup = (req, res, next) => {
   res.render("auth/signup", {
@@ -16,13 +17,16 @@ const postSignup = (req, res, next) => {
     .then((userDoc) => {
       if (!userDoc) {
         //create user
-        const user = new User({
-          email: email,
-          password: password,
-          cart: { items: [] },
-        });
-        return user.save().then((result) => {
-          res.redirect("/login");
+        bcrypt.hash(password, 12).then((hashedPassword) => {
+          console.log(hashedPassword);
+          const user = new User({
+            email: email,
+            password: hashedPassword,
+            cart: { items: [] },
+          });
+          return user.save().then((result) => {
+            res.redirect("/login");
+          });
         });
       } else {
         // redirect to the signup page
@@ -51,23 +55,27 @@ const getLogin = (req, res, next) => {
   });
 };
 const postLogin = (req, res, next) => {
-  // globalServerVariables.isAuthenticated = true;
-  // req.isLoggedIn = true;
-  // res.setHeader("Set-Cookie", "loggedIn=true; Max-Age=20; HttpOnly");
-
   const { email, password } = req.body;
   User.findOne({ email: email })
     .then((user) => {
-      if (!user) {
-        res.redirect("/");
-      } else {
+      if(user) {
         console.log("user found :", user.email);
-        req.session.user = user;
-        req.session.isLoggedIn = true;
-        req.session.save((err) => {
-          console.log(err);
-          res.redirect("/"); //redirect only when session has been saved
+        // compare password
+        bcrypt.compare(password, user.password).then((match) => {
+          // if password mathces then create the session for the user
+          if(match) {
+            console.log("MATHCED PASSWORD", match);
+            req.session.user = user;
+            req.session.isLoggedIn = true;
+            req.session.save((err) => {
+              console.log(err);
+              res.redirect("/"); //redirect only when session has been saved
+            });                      
+          }
+          else res.redirect("/login");
         });
+      } else {
+        res.redirect("/login");
       }
       // else throw new Error('User not found')
     })
