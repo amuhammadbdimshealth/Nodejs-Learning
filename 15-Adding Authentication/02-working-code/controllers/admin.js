@@ -1,9 +1,8 @@
 const mongodb = require('mongodb');
 const ObjectId = mongodb.ObjectId;
+const Product = require('../models/product');
 
-const Product = require("../models/product");
 // MIDDLEWARES - FOR HTTP GET REQUESTS
-
 exports.getAddProduct = (req, res, next) => {
   if(!req.session.isLoggedIn) {
     console.log('A A NOT LOGGED IN!')
