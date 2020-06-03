@@ -52,27 +52,27 @@ const getLogin = (req, res, next) => {
     // isAuthenticated: globalServerVariables.isAuthenticated
     // isAuthenticated: req.isLoggedIn
     isAuthenticated: req.session.isLoggedIn,
+    csrfToken: req.csrfToken(),
   });
 };
 const postLogin = (req, res, next) => {
   const { email, password } = req.body;
   User.findOne({ email: email })
     .then((user) => {
-      if(user) {
+      if (user) {
         console.log("user found :", user.email);
         // compare password
         bcrypt.compare(password, user.password).then((match) => {
           // if password mathces then create the session for the user
-          if(match) {
+          if (match) {
             console.log("MATHCED PASSWORD", match);
             req.session.user = user;
             req.session.isLoggedIn = true;
             req.session.save((err) => {
               console.log(err);
               res.redirect("/"); //redirect only when session has been saved
-            });                      
-          }
-          else res.redirect("/login");
+            });
+          } else res.redirect("/login");
         });
       } else {
         res.redirect("/login");

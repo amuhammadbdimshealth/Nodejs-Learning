@@ -141,6 +141,16 @@ Now let me show you how this works in the next lecture.
 <img src="./assets/S15/51.png" alt="packages" width="800"/>
 <img src="./assets/S15/52.png" alt="packages" width="800"/>
 
+## Further reading  
+#### Understanding CSRF 
+https://github.com/pillarjs/understanding-csrf
+
+#### What is CORS?
+https://www.codecademy.com/articles/what-is-cors
+
+#### Cross-site request forgery (CSRF)
+https://portswigger.net/web-security/csrf
+
 # S15 | Using a CSRF Token
 ---
 ## Notes

@@ -12,6 +12,7 @@ const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
 const User = require("./models/user");
 const mongoose = require("mongoose");
+const csrf = require("csurf");
 
 // App
 const app = express();
@@ -30,6 +31,9 @@ store.on("error", function (error) {
     console.log("error MongoDBStore: ", error);
   };
 });
+
+// CSRF
+const csrfProtection = csrf();
 
 // View engine
 app.set("view engine", "ejs");
@@ -59,6 +63,13 @@ app.use((req, res, next) => {
   } else {
     next();
   }
+});
+
+app.use(csrfProtection);
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
 });
 
 // Routes

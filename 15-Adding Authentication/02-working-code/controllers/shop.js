@@ -63,7 +63,8 @@ exports.getIndex = (req, res, next) => {
         // isAuthenticatedsession.: globalServerVariables.isAuthenticated
         // isAuthenticated: req.isLoggedIn
         // isAuthenticated: loggedInCookie
-        isAuthenticated: req.session.isLoggedIn
+        isAuthenticated: req.session.isLoggedIn,
+        csrfToken: req.csrfToken()
       });
     })
     .catch(err => {
