@@ -6,7 +6,14 @@ const orderSchema = mongoose.Schema({
       ref: "User",
       required: true
     },
-    name: String
+    // name: {
+    //   type: String,
+    //   required: true
+    // }
+    email: {
+      type: String,
+      required: true
+    }
   },
   products: [
     {

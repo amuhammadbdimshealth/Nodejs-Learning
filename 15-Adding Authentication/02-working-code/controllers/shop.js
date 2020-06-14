@@ -157,7 +157,7 @@ exports.postOrder = (req, res, next) => {
       const order = new Order({
         user: {
           userId: req.user._id,
-          name: req.user.name
+          email: req.user.email
         },
         products: userCartItems
       });
