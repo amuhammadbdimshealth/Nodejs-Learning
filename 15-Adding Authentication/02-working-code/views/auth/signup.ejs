@@ -4,6 +4,11 @@
 
 <body>
   <%- include('../includes/navigation.ejs') %>
+  <% if(messages.length > 0) { %>
+  <div style="border: 2px red solid;">
+    <%= messages %>
+  </div>
+  <% } %>
   <main>
     <form class="login-form" action="/signup" method="POST">
       <div class="form-control">
@@ -19,7 +24,7 @@
         <input type="password" name="confirmPassword" id="confirmPassword">
       </div>
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-      <button class="btn" type="submit">Signup</button>
-    </form>
+  <button class="btn" type="submit">Signup</button>
+  </form>
   </main>
 </body>

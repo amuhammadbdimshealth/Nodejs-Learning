@@ -8,6 +8,7 @@ const getSignup = (req, res, next) => {
     path: "/signup",
     pageTitle: "Signup",
     isAuthenticated: false,
+    messages: req.flash('info')
   });
 };
 const postSignup = (req, res, next) => {
@@ -29,7 +30,8 @@ const postSignup = (req, res, next) => {
           });
         });
       } else {
-        // redirect to the signup page
+        // User already exists - redirect to the signup page with an error message
+        req.flash('info', 'User already exists')
         res.redirect("/signup");
       }
     })

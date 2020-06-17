@@ -13,6 +13,7 @@ const authRoutes = require("./routes/auth");
 const User = require("./models/user");
 const mongoose = require("mongoose");
 const csrf = require("csurf");
+const flash = require('connect-flash');
 
 // App
 const app = express();
@@ -47,9 +48,10 @@ app.use(
     secret: "mysecret",
     resave: false,
     saveUninitialized: false,
-    store: store,
+    store: store
   })
 );
+app.use(flash());
 
 // Store the currently logged-in user in the request object from the session
 app.use((req, res, next) => {
