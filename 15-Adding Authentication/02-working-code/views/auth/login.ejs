@@ -5,6 +5,14 @@
 
 <body>
   <%- include('../includes/navigation.ejs') %>
+  
+  <% if(errorMessages.length > 0) { %>
+    <% for(var m of errorMessages) {%>
+    <div style="border: 2px red solid;">
+        <%= m %>
+    </div>
+    <% } %>
+  <% } %>
   <main>
     <form class="login-form" action="/login" method="POST">
       <div class="form-control">

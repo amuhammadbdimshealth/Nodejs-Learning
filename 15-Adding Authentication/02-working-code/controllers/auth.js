@@ -55,6 +55,7 @@ const getLogin = (req, res, next) => {
     // isAuthenticated: req.isLoggedIn
     isAuthenticated: req.session.isLoggedIn,
     csrfToken: req.csrfToken(),
+    errorMessages: req.flash('errorMessages')
   });
 };
 const postLogin = (req, res, next) => {
@@ -74,9 +75,13 @@ const postLogin = (req, res, next) => {
               console.log(err);
               res.redirect("/"); //redirect only when session has been saved
             });
-          } else res.redirect("/login");
+          } else {
+            req.flash('errorMessages',['Incorrect username or password', 'Please try again']);
+            res.redirect("/login");            
+          }
         });
       } else {
+        req.flash('errorMessages',['Incorrect username or password', 'Please try again']);
         res.redirect("/login");
       }
       // else throw new Error('User not found')
