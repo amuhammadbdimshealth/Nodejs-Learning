@@ -5,7 +5,7 @@
 <body>
   <%- include('../includes/navigation.ejs') %>
   <% if(messages.length > 0) { %>
-  <div style="border: 2px red solid;">
+    <div class="user-message user-message--error">
     <%= messages %>
   </div>
   <% } %>
