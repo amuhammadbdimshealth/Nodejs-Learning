@@ -4,6 +4,40 @@
 So how does sending mails work? Well we obviously get our node server with our code and we get our user and we want to send an email to that user. Now it's super important to understand and a common misconception that node and expressjs, these are language or frameworks runtimes that we use for writing our server side logic but with nodejs, you can't trivially create a mailing server. Handling mails is totally different to handling incoming requests and responses, it's a totally different technology, something totally different happens behind the scenes. Therefore in reality, you will very likely never implement your own mail server because that is a very complex task, creating a mail server that is capable of handling thousands or one hundred thousands of e-mails at the same time, sending them and so on, security, all that stuff is highly complex, so in reality you typically use third party mail servers for that and that is exactly what we will do in this module too but I will show you how to interact with such a service to send that e-mail through that service. And by the way all major web applications you might be interacting with including Udemy don't have their own mail servers, they are using third party providers like AWS or whatever it is for sending e-mails, so that is exactly what we will do in this module too.
 <img src="./assets/S16/1.png" alt="packages" width="800"/> 
 
+## Some links for reading 
+
+#### Node.js Send an Email - IMPLEMENTED 
+https://www.w3schools.com/nodejs/nodejs_email.asp
+
+#### Sign in using App Passwords (for @gmail) - IMPLEMENTED 
+https://stackoverflow.com/questions/60701936/error-invalid-login-application-specific-password-required
+
+Log in to your Google account Go to My Account > Sign-in & Security > App Passwords (Sign in again to confirm it's you) Scroll down to Select App (in the Password & sign-in method box) and choose Other (custom name) Give this app password a name, e.g. "nodemailer" Choose Generate Copy the long generated password and paste it into your Node.js script instead of your actual Gmail password.
+
+https://support.google.com/accounts/answer/185833?p=InvalidSecondFactor&visit_id=637281629448985003-2962330933&rd=1
+
+<img src="./assets/S16/17.png" alt="packages" width="800"/> 
+
+#### SMTP — Simple Mail Transfer Protocol
+https://medium.com/@jonathansychan/smtp-simple-mail-transfer-protocol-ed443b1f51d7#:~:text=SMTP%20is%20part%20of%20the,right%20computer%20and%20email%20inbox.
+
+#### Sending an email using Node.js, Express.js and Nodemailer
+https://www.inelaah.com/node-send-email
+
+#### Express js and nodemailer for Sending Email
+1. https://medium.com/@tariqul.islam.rony/sending-email-through-express-js-using-node-and-nodemailer-with-custom-functionality-a999bb7cd13c
+
+2. https://github.com/tariqulislam/express-email-project
+
+#### NODEMAILER
+https://nodemailer.com/about/
+
+https://support.google.com/accounts/answer/185833?p=InvalidSecondFactor&visit_id=637281629448985003-2962330933&rd=1
+
+#### TESTING SMTP
+https://nodemailer.com/smtp/testing/
+https://ethereal.email/
+
 # S15 | Using SendGrid
 ---
 ## Notes
