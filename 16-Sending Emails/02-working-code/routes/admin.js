@@ -4,6 +4,7 @@ const adminController = require('../controllers/admin');
 const router = express.Router();
 const isAuth = require('../middleware/is-auth');
 const sendMail = require('../controllers/sendmail');
+const sendMailSendgrid = require('../controllers/sendmail-sendgrid');
 
 // // /admin/add-product => GET
 router.get('/add-product', isAuth, adminController.getAddProduct);
@@ -23,5 +24,6 @@ router.post('/edit-product', isAuth, adminController.postEditProduct);
 router.post('/delete-product', isAuth, adminController.postDeleteProduct);
 
 router.get('/sendmail', sendMail.sendEmail)
+router.get('/sendmail-sendgrid', sendMailSendgrid.sendEmail)
 
 module.exports = router;

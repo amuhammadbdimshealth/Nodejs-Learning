@@ -1,4 +1,4 @@
-# S15 | How Does Sending Emails Work?
+# S16 | How Does Sending Emails Work?
 ---
 ## Notes
 So how does sending mails work? Well we obviously get our node server with our code and we get our user and we want to send an email to that user. Now it's super important to understand and a common misconception that node and expressjs, these are language or frameworks runtimes that we use for writing our server side logic but with nodejs, you can't trivially create a mailing server. Handling mails is totally different to handling incoming requests and responses, it's a totally different technology, something totally different happens behind the scenes. Therefore in reality, you will very likely never implement your own mail server because that is a very complex task, creating a mail server that is capable of handling thousands or one hundred thousands of e-mails at the same time, sending them and so on, security, all that stuff is highly complex, so in reality you typically use third party mail servers for that and that is exactly what we will do in this module too but I will show you how to interact with such a service to send that e-mail through that service. And by the way all major web applications you might be interacting with including Udemy don't have their own mail servers, they are using third party providers like AWS or whatever it is for sending e-mails, so that is exactly what we will do in this module too.
@@ -38,8 +38,32 @@ https://support.google.com/accounts/answer/185833?p=InvalidSecondFactor&visit_id
 https://nodemailer.com/smtp/testing/
 https://ethereal.email/
 
-# S15 | Using SendGrid
+# S16 | Using SendGrid
 ---
+
+## Sendgrid documentation 
+https://www.npmjs.com/package/nodemailer-sendgrid-transport
+As of June 1, 2016, SendGrid will no longer support this library.
+
+## sendgrid-nodejs
+https://github.com/sendgrid/sendgrid-nodejs/tree/master/packages/mail
+
+## Emails with Nodemailer & SendGrid - Medium article
+https://medium.com/code-well-live-forever/emails-with-nodemailer-sendgrid-c98cd37c8e03
+
+## Nodemailer-Sendgrid-transport
+https://github.com/sendgrid/nodemailer-sendgrid-transport/blob/master/USAGE.md
+
+## Environment variables basics 
+**How to use environment variables in Node.js**
+https://itnext.io/how-to-use-environment-variables-in-node-js-cb2ef0e9574a
+
+**Node.js Everywhere with Environment Variables!**"
+https://medium.com/the-node-js-collection/making-your-node-js-work-everywhere-with-environment-variables-2da8cdf6e786
+
+**Working with Environment Variables in Node.js**
+https://www.twilio.com/blog/working-with-environment-variables-in-node-js-html#:~:text=Working%20with%20Environment%20Variables%20in%20Node.,different%20aspects%20of%20your%20Node.&text=js%20modules%20use%20environment%20variables,should%20listen%20to%20properly%20work.
+
 ## Notes
 So in this course, I will use sendgrid you'll find it on sendgrid.com and I'll use it because they have a free entry tier which stays free as long as you send less than 100 e-mails a day. 
 
@@ -52,7 +76,7 @@ now I will use this one because we can use it for free. So let's click try for f
 <img src="./assets/S16/4.png" alt="packages" width="800"/>
 <img src="./assets/S16/5.png" alt="packages" width="800"/>
 
-# S15 | Using Nodemailer to Send an Email
+# S16 | Using Nodemailer to Send an Email
 ---
 ## Notes
 
@@ -77,13 +101,13 @@ https://nodemailer.com/about/
 ## SMTP-service-crash-course
 https://sendgrid.com/blog/smtp-service-crash-course/
 
-# S15 | Potential Limitation for Large Scale Apps
+# S16 | Potential Limitation for Large Scale Apps
 ---
 ## Notes
 So in this module I showed you how to send mails with nodemailer and in this case, the sendgrid third party service. Now one thing I also want to highlight is the way we send that an e-mail here works for our app and it's good that we don't block the redirect but that we redirect and send the mail at the same time because if you have an application with a lot of requests and you would wait for the email to be sent before you redirect, you might slow down your application because you're sending a lot of e-mails. Now depending on the size of your app and now we're talking about really huge apps, you could also look into totally different approaches where you have some server side scripts running every x hours or every x minutes that send e-mails to newly signed up users. Now this will only matter from a certain scale of app on and there you have different problems anyways but I just want to highlight that you should strongly consider not using this in a blocking way because if you wait for this to be finished, this can be slow and you have to evaluate if it's worth waiting for this or if your user can continue even without that mail being delivered. Now with that, you learn how to send mails, not that difficult as you can tell. Now let's use that knowledge in the next module and enhance our authentication process or our authentication features we offer. 
 <img src="./assets/S16/15.png" alt="packages" width="800"/>
 
-# S15 | Useful Resources & Links
+# S16 | Useful Resources & Links
 --- 
 Attached, you find the source code for this section.
 When using my source code, make sure to run npm install in the extracted folder!
