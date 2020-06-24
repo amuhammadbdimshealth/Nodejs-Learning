@@ -1,6 +1,6 @@
 var nodemailer = require('nodemailer');
 
-exports.sendEmail = (req, res, next) => {
+exports.sendEmailTest = (req, res, next) => {
   console.log("SENDING EMAIL....");
 
   var transporter = nodemailer.createTransport({  

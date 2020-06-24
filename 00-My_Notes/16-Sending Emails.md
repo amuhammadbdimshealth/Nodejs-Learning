@@ -48,7 +48,7 @@ As of June 1, 2016, SendGrid will no longer support this library.
 ## sendgrid-nodejs
 https://github.com/sendgrid/sendgrid-nodejs/tree/master/packages/mail
 
-## Emails with Nodemailer & SendGrid - Medium article
+## Emails with Nodemailer & SendGrid - Medium article - IMPLEMENTED
 https://medium.com/code-well-live-forever/emails-with-nodemailer-sendgrid-c98cd37c8e03
 
 ## Nodemailer-Sendgrid-transport

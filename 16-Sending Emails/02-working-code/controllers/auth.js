@@ -2,6 +2,7 @@ const globalServerVariables = require("../util/global-variables");
 const globalFunctions = require("../util/global-functions");
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
+const sendMailSendgrid = require('../controllers/sendmail-sendgrid');
 
 const getSignup = (req, res, next) => {
   res.render("auth/signup", {
@@ -11,6 +12,15 @@ const getSignup = (req, res, next) => {
     messages: req.flash('info')
   });
 };
+const sendSignupEmail = (email) => {
+  sendMailSendgrid.sendMailWithOptions({
+    from: "amuhammadbdimshealth@gmail.com",
+    to: email,
+    subject: "Signup Confirmation - Node Shopping Cart",
+    // text: 'That was easy!'
+    html: "<h1>Your signup has been confirmed</h1><p>Enjoy shopping with us!</p>",
+  })
+}
 const postSignup = (req, res, next) => {
   const { email, password, confirmPassword } = req.body;
   console.log(email, password, confirmPassword);
@@ -27,6 +37,8 @@ const postSignup = (req, res, next) => {
           });
           return user.save().then((result) => {
             res.redirect("/login");
+            // Send an email about signup confirmation
+            sendSignupEmail(email);
           });
         });
       } else {

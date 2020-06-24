@@ -23,7 +23,7 @@ router.post('/edit-product', isAuth, adminController.postEditProduct);
 
 router.post('/delete-product', isAuth, adminController.postDeleteProduct);
 
-router.get('/sendmail', sendMail.sendEmail)
-router.get('/sendmail-sendgrid', sendMailSendgrid.sendEmail)
+router.get('/sendmail', sendMail.sendEmailTest)
+router.get('/sendmail-sendgrid', sendMailSendgrid.sendEmailTest)
 
 module.exports = router;
