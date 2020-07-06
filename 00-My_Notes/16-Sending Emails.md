@@ -64,6 +64,9 @@ https://medium.com/the-node-js-collection/making-your-node-js-work-everywhere-wi
 **Working with Environment Variables in Node.js**
 https://www.twilio.com/blog/working-with-environment-variables-in-node-js-html#:~:text=Working%20with%20Environment%20Variables%20in%20Node.,different%20aspects%20of%20your%20Node.&text=js%20modules%20use%20environment%20variables,should%20listen%20to%20properly%20work.
 
+**dotenv**
+https://www.npmjs.com/package/dotenv
+
 ## Notes
 So in this course, I will use sendgrid you'll find it on sendgrid.com and I'll use it because they have a free entry tier which stays free as long as you send less than 100 e-mails a day. 
 
