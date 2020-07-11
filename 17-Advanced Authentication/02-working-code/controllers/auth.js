@@ -130,7 +130,7 @@ const sendPasswordResetEmail = (email, resetToken) => {
   sendMailDefault.sendMailWithOptions({
     from: "amuhammadbdimshealth@gmail.com",
     to: email,
-    subject: "Password Reset html",    
+    subject: "Password Reset Link",    
     html:`<h1>You requested a password reset</h1>
           <p>Click this link to set a new password 
             <a href="http://localhost:4000/reset/${resetToken}">ResetLink</a> 
@@ -152,7 +152,7 @@ const postResetPassword = (req, res, next) => {
       User.findOne({ email: email }, (err, user) => {
         if (!user) {
           console.log("No user found", err);
-          req.flash("error", "No user with that email found");
+          req.flash("errorMessages", "No user with that email found");
           return res.redirect("/reset");
         } else {          
           // Save the user with new resetToken and resetTokenExpiration
