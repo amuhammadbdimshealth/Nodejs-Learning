@@ -3,6 +3,7 @@ const globalFunctions = require("../util/global-functions");
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const sendMailSendgrid = require("../controllers/sendmail-sendgrid");
+const sendMailDefault = require("../controllers/sendmail");
 const crypto = require("crypto");
 
 const getSignup = (req, res, next) => {
@@ -14,7 +15,7 @@ const getSignup = (req, res, next) => {
   });
 };
 const sendSignupEmail = (email) => {
-  sendMailSendgrid.sendMailWithOptions({
+  sendMailDefault.sendMailWithOptions({
     from: "amuhammadbdimshealth@gmail.com",
     to: email,
     subject: "Signup Confirmation - Node Shopping Cart",
@@ -126,16 +127,14 @@ const getResetPassword = (req, res, next) => {
 };
 
 const sendPasswordResetEmail = (email, resetToken) => {
-  sendMailSendgrid.sendMailWithOptions({
+  sendMailDefault.sendMailWithOptions({
     from: "amuhammadbdimshealth@gmail.com",
     to: email,
-    subject: "Password Reset",
-    // text: 'That was easy!'
-    html:
-      `<h1>You requested a password reset</h1>      
-      <p>Click this link to set a new password
-        <a href="http://localhost:4000/reset/${resetToken}"></a>
-      </p>`,
+    subject: "Password Reset html",    
+    html:`<h1>You requested a password reset</h1>
+          <p>Click this link to set a new password 
+            <a href="http://localhost:4000/reset/${resetToken}">ResetLink</a> 
+          </p>`
   });
 };
 
@@ -155,7 +154,7 @@ const postResetPassword = (req, res, next) => {
           console.log("No user found", err);
           req.flash("error", "No user with that email found");
           return res.redirect("/reset");
-        } else {
+        } else {          
           // Save the user with new resetToken and resetTokenExpiration
           user.resetToken = token;
           user.resetTokenExpiration = Date.now() + 3600000;
@@ -163,6 +162,7 @@ const postResetPassword = (req, res, next) => {
         }
       })
       .then(result => {
+        console.log('TOKEN', token);
         // Send email with resetToken          
         res.redirect('/');
         sendPasswordResetEmail(email, token); // EMAIL NOT WORKING FIND OUT WHY
