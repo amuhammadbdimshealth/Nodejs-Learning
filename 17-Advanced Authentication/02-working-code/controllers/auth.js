@@ -2,14 +2,15 @@ const globalServerVariables = require("../util/global-variables");
 const globalFunctions = require("../util/global-functions");
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
-const sendMailSendgrid = require('../controllers/sendmail-sendgrid');
+const sendMailSendgrid = require("../controllers/sendmail-sendgrid");
+const crypto = require("crypto");
 
 const getSignup = (req, res, next) => {
   res.render("auth/signup", {
     path: "/signup",
     pageTitle: "Signup",
     isAuthenticated: false,
-    messages: req.flash('info')
+    messages: req.flash("info"),
   });
 };
 const sendSignupEmail = (email) => {
@@ -18,9 +19,10 @@ const sendSignupEmail = (email) => {
     to: email,
     subject: "Signup Confirmation - Node Shopping Cart",
     // text: 'That was easy!'
-    html: "<h1>Your signup has been confirmed</h1><p>Enjoy shopping with us!</p>",
-  })
-}
+    html:
+      "<h1>Your signup has been confirmed</h1><p>Enjoy shopping with us!</p>",
+  });
+};
 const postSignup = (req, res, next) => {
   const { email, password, confirmPassword } = req.body;
   console.log(email, password, confirmPassword);
@@ -43,7 +45,7 @@ const postSignup = (req, res, next) => {
         });
       } else {
         // User already exists - redirect to the signup page with an error message
-        req.flash('info', 'User already exists')
+        req.flash("info", "User already exists");
         res.redirect("/signup");
       }
     })
@@ -67,7 +69,7 @@ const getLogin = (req, res, next) => {
     // isAuthenticated: req.isLoggedIn
     isAuthenticated: req.session.isLoggedIn,
     csrfToken: req.csrfToken(),
-    errorMessages: req.flash('errorMessages')
+    errorMessages: req.flash("errorMessages"),
   });
 };
 const postLogin = (req, res, next) => {
@@ -88,12 +90,18 @@ const postLogin = (req, res, next) => {
               res.redirect("/"); //redirect only when session has been saved
             });
           } else {
-            req.flash('errorMessages',['Incorrect username or password', 'Please try again']);
-            res.redirect("/login");            
+            req.flash("errorMessages", [
+              "Incorrect username or password",
+              "Please try again",
+            ]);
+            res.redirect("/login");
           }
         });
       } else {
-        req.flash('errorMessages',['Incorrect username or password', 'Please try again']);
+        req.flash("errorMessages", [
+          "Incorrect username or password",
+          "Please try again",
+        ]);
         res.redirect("/login");
       }
       // else throw new Error('User not found')
@@ -109,11 +117,57 @@ const postLogout = (req, res, next) => {
   });
 };
 
-const getReset = (req, res, next) => {
+const getResetPassword = (req, res, next) => {
   res.render("auth/reset", {
     path: "/reset",
-    pageTitle: "Reset Password",        
-    errorMessages: req.flash('errorMessages')
+    pageTitle: "Reset Password",
+    errorMessages: req.flash("errorMessages"),
+  });
+};
+
+const sendPasswordResetEmail = (email, resetToken) => {
+  sendMailSendgrid.sendMailWithOptions({
+    from: "amuhammadbdimshealth@gmail.com",
+    to: email,
+    subject: "Password Reset",
+    // text: 'That was easy!'
+    html:
+      `<h1>You requested a password reset</h1>      
+      <p>Click this link to set a new password
+        <a href="http://localhost:4000/reset/${resetToken}"></a>
+      </p>`,
+  });
+};
+
+// Send email with random token to the user
+const postResetPassword = (req, res, next) => {
+  // Create random token
+  crypto.randomBytes(32, (err, buf) => {
+    if (err) {
+      console.log(err);
+      return res.redirect("/reset");
+    } else {
+      const token = buf.toString("hex");
+      const email = req.body.email;
+      // Find user with email for reset
+      User.findOne({ email: email }, (err, user) => {
+        if (!user) {
+          console.log("No user found", err);
+          req.flash("error", "No user with that email found");
+          return res.redirect("/reset");
+        } else {
+          // Save the user with new resetToken and resetTokenExpiration
+          user.resetToken = token;
+          user.resetTokenExpiration = Date.now() + 3600000;
+          return user.save();
+        }
+      })
+      .then(result => {
+        // Send email with resetToken          
+        res.redirect('/');
+        sendPasswordResetEmail(email, token); // EMAIL NOT WORKING FIND OUT WHY
+      });
+    }
   });
 };
 
@@ -123,5 +177,6 @@ module.exports = {
   postLogout,
   getSignup,
   postSignup,
-  getReset
+  getResetPassword,
+  postResetPassword,
 };

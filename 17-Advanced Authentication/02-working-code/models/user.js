@@ -20,7 +20,9 @@ const userSchema = new mongoose.Schema(
           quantity: { type: Number, required: true }
         }
       ]
-    }
+    },
+    resetToken: String,
+    resetTokenExpiration: Date    
   },
   { typePojoToMixed: false }
 );
