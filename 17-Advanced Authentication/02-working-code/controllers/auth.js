@@ -26,13 +26,13 @@ const sendSignupEmail = (email) => {
 };
 const postSignup = (req, res, next) => {
   const { email, password, confirmPassword } = req.body;
-  
+
   //check password and confirm password
-  const passwordMatch = password == confirmPassword; 
+  const passwordMatch = password == confirmPassword;
 
   User.findOne({ email: email })
     .then((userDoc) => {
-      if (!userDoc && passwordMatch) {        
+      if (!userDoc && passwordMatch) {
         //create user
         bcrypt.hash(password, 12).then((hashedPassword) => {
           console.log(hashedPassword);
@@ -47,9 +47,13 @@ const postSignup = (req, res, next) => {
             sendSignupEmail(email);
           });
         });
-      } else {        
-        if(userDoc) { req.flash("info", "User already exists") }
-        if(!passwordMatch) { req.flash("info", "Passwords do not match") }
+      } else {
+        if (userDoc) {
+          req.flash("info", "User already exists");
+        }
+        if (!passwordMatch) {
+          req.flash("info", "Passwords do not match");
+        }
         res.redirect("/signup");
       }
     })
@@ -112,7 +116,6 @@ const postLogin = (req, res, next) => {
     })
     .catch((err) => console.log(err));
 };
-
 const postLogout = (req, res, next) => {
   req.session.destroy((err) => {
     console.log("LOGOUT...");
@@ -120,7 +123,6 @@ const postLogout = (req, res, next) => {
     res.redirect("/");
   });
 };
-
 const getResetPassword = (req, res, next) => {
   res.render("auth/reset", {
     path: "/reset",
@@ -128,7 +130,6 @@ const getResetPassword = (req, res, next) => {
     errorMessages: req.flash("errorMessages"),
   });
 };
-
 const sendPasswordResetEmail = (email, resetToken) => {
   sendMailDefault.sendMailWithOptions({
     from: "amuhammadbdimshealth@gmail.com",
@@ -136,11 +137,10 @@ const sendPasswordResetEmail = (email, resetToken) => {
     subject: "Password Reset Link",
     html: `<h1>You requested a password reset</h1>
           <p>Click this link to set a new password 
-            <a href="http://localhost:4000/reset/${resetToken}">ResetLink</a> 
+            <a href="http://localhost:4000/new-password/${resetToken}">ResetLink</a> 
           </p>`,
   });
 };
-
 // Send email with random token to the user
 const postResetPassword = (req, res, next) => {
   // Create random token
@@ -172,6 +172,31 @@ const postResetPassword = (req, res, next) => {
     }
   });
 };
+const getNewPassword = (req, res, next) => {
+  const resetToken = req.params.resetToken;
+  User.findOne(
+    {
+      resetToken: resetToken,
+      resetTokenExpiration: { $gt: Date.now() },
+    },
+    (err, user) => {
+      if(user){
+        console.log("USER", user);
+        res.render("auth/new-password", {
+          pageTitle: "Set New Password",
+          path: "",
+          messages: req.flash("errorMessages"),
+          userID: user._id.toString(),
+          resetToken: resetToken,
+        });
+      }
+      else {
+        req.flash("errorMessages", "Rest token expired or is not valid");
+        return res.redirect("/reset");
+      }
+    }
+  );
+};
 
 module.exports = {
   getLogin,
@@ -181,4 +206,5 @@ module.exports = {
   postSignup,
   getResetPassword,
   postResetPassword,
+  getNewPassword,
 };

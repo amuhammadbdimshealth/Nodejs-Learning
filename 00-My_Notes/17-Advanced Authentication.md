@@ -50,7 +50,7 @@ So let's give this a try this reset back and it's for did we first of all need t
 # S17 | Creating the Reset Password Form
 ---
 ## Steps
-1. Create the password reset form 
+1. Create the password reset form - DONE
 2. Render the form when requested with valid token value
 3. Add new route and controller to reset the password 
    1. Hash the password before storing 

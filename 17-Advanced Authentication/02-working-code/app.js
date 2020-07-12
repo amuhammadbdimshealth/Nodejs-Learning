@@ -1,7 +1,7 @@
 // Imports
 const path = require("path");
 
-const express = require("express");
+// const express = require("express");
 const bodyParser = require("body-parser");
 var session = require("express-session");
 var MongoDBStore = require("connect-mongodb-session")(session);
@@ -14,7 +14,7 @@ const User = require("./models/user");
 const mongoose = require("mongoose");
 const csrf = require("csurf");
 const flash = require('connect-flash');
-
+const express = require("express");
 
 // App
 const app = express();
@@ -59,7 +59,7 @@ app.use((req, res, next) => {
   if (req.session.user) {
     User.findById(req.session.user._id)
       .then((user) => {
-        req.user = user; //mongoose model. we do not need to create user object again
+        req.user = user; //mongoose model. we do not need to create user object again        
         next();
       })
       .catch((err) => console.log(err));
