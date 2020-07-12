@@ -26,10 +26,13 @@ const sendSignupEmail = (email) => {
 };
 const postSignup = (req, res, next) => {
   const { email, password, confirmPassword } = req.body;
-  console.log(email, password, confirmPassword);
+  
+  //check password and confirm password
+  const passwordMatch = password == confirmPassword; 
+
   User.findOne({ email: email })
     .then((userDoc) => {
-      if (!userDoc) {
+      if (!userDoc && passwordMatch) {        
         //create user
         bcrypt.hash(password, 12).then((hashedPassword) => {
           console.log(hashedPassword);
@@ -44,9 +47,9 @@ const postSignup = (req, res, next) => {
             sendSignupEmail(email);
           });
         });
-      } else {
-        // User already exists - redirect to the signup page with an error message
-        req.flash("info", "User already exists");
+      } else {        
+        if(userDoc) { req.flash("info", "User already exists") }
+        if(!passwordMatch) { req.flash("info", "Passwords do not match") }
         res.redirect("/signup");
       }
     })
@@ -130,11 +133,11 @@ const sendPasswordResetEmail = (email, resetToken) => {
   sendMailDefault.sendMailWithOptions({
     from: "amuhammadbdimshealth@gmail.com",
     to: email,
-    subject: "Password Reset Link",    
-    html:`<h1>You requested a password reset</h1>
+    subject: "Password Reset Link",
+    html: `<h1>You requested a password reset</h1>
           <p>Click this link to set a new password 
             <a href="http://localhost:4000/reset/${resetToken}">ResetLink</a> 
-          </p>`
+          </p>`,
   });
 };
 
@@ -154,17 +157,16 @@ const postResetPassword = (req, res, next) => {
           console.log("No user found", err);
           req.flash("errorMessages", "No user with that email found");
           return res.redirect("/reset");
-        } else {          
+        } else {
           // Save the user with new resetToken and resetTokenExpiration
           user.resetToken = token;
           user.resetTokenExpiration = Date.now() + 3600000;
           return user.save();
         }
-      })
-      .then(result => {
-        console.log('TOKEN', token);
-        // Send email with resetToken          
-        res.redirect('/');
+      }).then((result) => {
+        console.log("TOKEN", token);
+        // Send email with resetToken
+        res.redirect("/");
         sendPasswordResetEmail(email, token); // EMAIL NOT WORKING FIND OUT WHY
       });
     }
