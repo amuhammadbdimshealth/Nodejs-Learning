@@ -200,7 +200,12 @@ const getNewPassword = (req, res, next) => {
 const postNewPassword = (req, res, next) => {
   // get the resetToken, new password, confirmPassword fields from form body
   const { newPassword, confirmPassword, resetToken, userID } = req.body;
-  console.log("NEW PASSWORD SAVING......", { newPassword, confirmPassword, resetToken, userID });
+  console.log("NEW PASSWORD SAVING......", {
+    newPassword,
+    confirmPassword,
+    resetToken,
+    userID,
+  });
   // find the user to update the password
   // check if newPassword and confirmPassword fields match
   const passwordMatch = newPassword == confirmPassword;
@@ -214,16 +219,18 @@ const postNewPassword = (req, res, next) => {
         //update password
         bcrypt.hash(newPassword, 12).then((hashedPassword) => {
           userDoc.password = hashedPassword;
+          userDoc.resetToken = undefined;
+          userDoc.resetTokenExpiration = undefined;
           return userDoc.save().then((result) => {
-            req.flash("infoMessages", "Please login with your new password")
-            res.redirect("/login");                        
+            req.flash("infoMessages", "Please login with your new password");
+            res.redirect("/login");
           });
         });
       } else {
         if (!userDoc) {
           req.flash("errorMessages", "Reset token expired or is not valid");
         }
-        if (!passwordMatch) {
+        else if (!passwordMatch) {
           req.flash("errorMessages", "Passwords do not match");
         }
         res.redirect("/login");
