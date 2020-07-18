@@ -6,9 +6,16 @@
 <body>
   <%- include('../includes/navigation.ejs') %>
   
-  <% if(errorMessages.length > 0) { %>
+  <% if(errorMessages && errorMessages.length > 0) { %>
     <% for(var m of errorMessages) {%>
     <div class="user-message user-message--error">
+        <%= m %>
+    </div>
+    <% } %>
+  <% } %>
+  <% if(infoMessages && infoMessages.length > 0) { %>
+    <% for(var m of infoMessages) {%>
+    <div class="user-message">
         <%= m %>
     </div>
     <% } %>

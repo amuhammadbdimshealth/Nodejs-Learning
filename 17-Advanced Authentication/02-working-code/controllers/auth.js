@@ -78,6 +78,7 @@ const getLogin = (req, res, next) => {
     isAuthenticated: req.session.isLoggedIn,
     csrfToken: req.csrfToken(),
     errorMessages: req.flash("errorMessages"),
+    infoMessages: req.flash("infoMessages"),
   });
 };
 const postLogin = (req, res, next) => {
@@ -180,7 +181,7 @@ const getNewPassword = (req, res, next) => {
       resetTokenExpiration: { $gt: Date.now() },
     },
     (err, user) => {
-      if(user){
+      if (user) {
         console.log("USER", user);
         res.render("auth/new-password", {
           pageTitle: "Set New Password",
@@ -189,13 +190,50 @@ const getNewPassword = (req, res, next) => {
           userID: user._id.toString(),
           resetToken: resetToken,
         });
-      }
-      else {
+      } else {
         req.flash("errorMessages", "Rest token expired or is not valid");
         return res.redirect("/reset");
       }
     }
   );
+};
+const postNewPassword = (req, res, next) => {
+  // get the resetToken, new password, confirmPassword fields from form body
+  const { newPassword, confirmPassword, resetToken, userID } = req.body;
+  console.log("NEW PASSWORD SAVING......", { newPassword, confirmPassword, resetToken, userID });
+  // find the user to update the password
+  // check if newPassword and confirmPassword fields match
+  const passwordMatch = newPassword == confirmPassword;
+  User.findOne({
+    _id: userID,
+    resetToken: resetToken,
+    resetTokenExpiration: { $gt: Date.now() },
+  })
+    .then((userDoc) => {
+      if (userDoc && passwordMatch) {
+        //update password
+        bcrypt.hash(newPassword, 12).then((hashedPassword) => {
+          userDoc.password = hashedPassword;
+          return userDoc.save().then((result) => {
+            req.flash("infoMessages", "Please login with your new password")
+            res.redirect("/login");                        
+          });
+        });
+      } else {
+        if (!userDoc) {
+          req.flash("errorMessages", "Reset token expired or is not valid");
+        }
+        if (!passwordMatch) {
+          req.flash("errorMessages", "Passwords do not match");
+        }
+        res.redirect("/login");
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  // check if resetToken is still valid
+  // update the password after hashing
 };
 
 module.exports = {
@@ -207,4 +245,5 @@ module.exports = {
   getResetPassword,
   postResetPassword,
   getNewPassword,
+  postNewPassword,
 };

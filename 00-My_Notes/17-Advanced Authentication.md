@@ -51,7 +51,7 @@ So let's give this a try this reset back and it's for did we first of all need t
 ---
 ## Steps
 1. Create the password reset form - DONE
-2. Render the form when requested with valid token value
+2. Render the form when requested with valid token value - DONE
 3. Add new route and controller to reset the password 
    1. Hash the password before storing 
 4. Test
