@@ -20,9 +20,7 @@ router.get('/edit-product/:productId', isAuth, adminController.getEditProduct);
 
 // // /admin/edit-product => POST
 router.post('/edit-product', isAuth, adminController.postEditProduct);
-
 router.post('/delete-product', isAuth, adminController.postDeleteProduct);
-
 router.get('/sendmail', sendMail.sendEmailTest)
 router.get('/sendmail-sendgrid', sendMailSendgrid.sendEmailTest)
 

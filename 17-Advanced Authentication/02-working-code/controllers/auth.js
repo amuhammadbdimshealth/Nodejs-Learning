@@ -86,12 +86,12 @@ const postLogin = (req, res, next) => {
   User.findOne({ email: email })
     .then((user) => {
       if (user) {
-        console.log("user found :", user.email);
+        console.log("USER FOUND: ", user.email);
         // compare password
         bcrypt.compare(password, user.password).then((match) => {
           // if password mathces then create the session for the user
           if (match) {
-            console.log("MATHCED PASSWORD", match);
+            console.log("MATHCED PASSWORD: ", match);
             req.session.user = user;
             req.session.isLoggedIn = true;
             req.session.save((err) => {

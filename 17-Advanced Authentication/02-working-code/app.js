@@ -3,19 +3,20 @@ const path = require("path");
 
 // const express = require("express");
 const bodyParser = require("body-parser");
-var session = require("express-session");
-var MongoDBStore = require("connect-mongodb-session")(session);
+var session = require("express-session"); // Session management // https://github.com/expressjs/session
+var MongoDBStore = require("connect-mongodb-session")(session); // Session management // https://github.com/mongodb-js/connect-mongodb-session#readme
 
 const errorController = require("./controllers/error");
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
 const User = require("./models/user");
-const mongoose = require("mongoose");
-const csrf = require("csurf");
-const flash = require('connect-flash');
+const mongoose = require("mongoose"); // Mongoose
+const csrf = require("csurf"); // CSRF Protection
+const flash = require('connect-flash'); // Flash error messages
 const express = require("express");
 
+//----------------------------------------------------------------------------
 // App
 const app = express();
 
@@ -36,12 +37,13 @@ store.on("error", function (error) {
 
 // CSRF
 const csrfProtection = csrf();
-
-// View engine
+//----------------------------------------------------------------------------
+// View engine 
 app.set("view engine", "ejs");
 app.set("views", "views");
 
-// Middlewares
+//----------------------------------------------------------------------------
+// Middlewares 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
@@ -75,7 +77,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Routes
+//----------------------------------------------------------------------------
+// Routes 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
