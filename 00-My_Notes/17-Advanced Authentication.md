@@ -103,7 +103,7 @@ A good example would be this one. I'm not locked in. Now let me log in with this
 1. [DONE] - Review Session concept
 2. [DONE] - Show products that were created by the logged in user
 3. [DONE] - Restrict product modification by other than the actual product creator
-4. [TODO] - Restrict product deletion by other than the actual product creator
+4. [DONE] - Restrict product deletion by other than the actual product creator
 
 
 ## Notes

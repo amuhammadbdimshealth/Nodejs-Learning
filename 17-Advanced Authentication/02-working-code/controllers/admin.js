@@ -113,13 +113,19 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.postDeleteProduct = (req, res, next) => {
-  const prodId = req.body.productId;
-  // Product.deleteById(prodId)
-  Product.findByIdAndDelete(prodId) //or findByIdAndRemove
-    .then(() => {
+  const productId = req.body.productId;
+  const loggedUserId = req.user._id.toString();    
+  Product.findOne({ _id: productId, userid: loggedUserId}).then((product) => {    
+    if(product) {
+      product.deleteOne().then(()=>{
+        res.redirect("/admin/products");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    } else {
+      console.log("YOU ARE NOT THE PRODUCT OWNER");
       res.redirect("/admin/products");
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+    }
+  })
 };
