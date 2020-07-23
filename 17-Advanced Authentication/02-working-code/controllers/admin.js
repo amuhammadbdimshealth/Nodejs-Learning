@@ -89,9 +89,9 @@ exports.postEditProduct = (req, res, next) => {
   const { productId, title, price, imageUrl, description } = req.body;
   // check if logged in user is the owner of this product before editing
   const loggedUserId = req.user._id.toString();
-  Product.findOne({ _id: productId, userid: loggedUserId}).then((product) => {
+  Product.findOne({ _id: productId, userid: loggedUserId }).then((product) => {
     if (product) {
-      console.log("YOU THE PRODUCT OWNER", product);    
+      console.log("YOU THE PRODUCT OWNER", product);
       // replace the product in the DB/file with the updated product
       product
         .updateOne({
@@ -99,7 +99,7 @@ exports.postEditProduct = (req, res, next) => {
           price,
           imageUrl,
           description,
-        })        
+        })
         .then((updatedProd) => {
           console.log("UPDATED PRODUCT : ", updatedProd);
           res.redirect("/admin/products");
@@ -114,18 +114,20 @@ exports.postEditProduct = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const productId = req.body.productId;
-  const loggedUserId = req.user._id.toString();    
-  Product.findOne({ _id: productId, userid: loggedUserId}).then((product) => {    
-    if(product) {
-      product.deleteOne().then(()=>{
-        res.redirect("/admin/products");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const loggedUserId = req.user._id.toString();
+  Product.findOne({ _id: productId, userid: loggedUserId }).then((product) => {
+    if (product) {
+      product
+        .deleteOne()
+        .then(() => {
+          res.redirect("/admin/products");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     } else {
       console.log("YOU ARE NOT THE PRODUCT OWNER");
       res.redirect("/admin/products");
     }
-  })
+  });
 };
