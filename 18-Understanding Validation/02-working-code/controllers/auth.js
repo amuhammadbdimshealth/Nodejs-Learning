@@ -27,7 +27,7 @@ const sendSignupEmail = (email) => {
 };
 const postSignup = (req, res, next) => {
   const errors = validationResult(req);
-  console.log(errors.array());
+  console.log('AUTH--CONTROOLER',errors.array());
   if (!errors.isEmpty()) {
     return res.status(402).render("auth/signup", {
       path: "/signup",
