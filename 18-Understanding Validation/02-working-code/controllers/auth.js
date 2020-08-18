@@ -27,11 +27,12 @@ const sendSignupEmail = (email) => {
 };
 const postSignup = (req, res, next) => {
   const errors = validationResult(req);
+  console.log(errors.array());
   if (!errors.isEmpty()) {
     return res.status(402).render("auth/signup", {
       path: "/signup",
       pageTitle: "Signup",
-      errorMessages: errors.array(),
+      errorMessages: errors.array().map(e=>e.msg),
       infoMessages: null
     });
     // return res.status(400).json({ errors: errors.array() });

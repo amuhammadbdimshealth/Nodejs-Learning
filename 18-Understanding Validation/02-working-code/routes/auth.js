@@ -11,9 +11,9 @@ router.post("/signup", [
   
   // email, password, confirmPassword
   // email must be an email
-  body('email').isEmail(),
+  body('email').isEmail().withMessage("Please enter a valid email address"),
   // password must be at least 5 chars long
-  body('password').isLength({ min: 5 })
+  body('password').isLength({ min: 5 }).withMessage("Password length must be greater than 5 characters")
 
 ], authController.postSignup);
 router.get("/reset",authController.getResetPassword);
