@@ -12,7 +12,7 @@ const getSignup = (req, res, next) => {
     path: "/signup",
     pageTitle: "Signup",
     infoMessages: req.flash("info"),
-    errorMessages: null
+    errorMessages: null,
   });
 };
 const sendSignupEmail = (email) => {
@@ -27,13 +27,13 @@ const sendSignupEmail = (email) => {
 };
 const postSignup = (req, res, next) => {
   const errors = validationResult(req);
-  console.log('AUTH--CONTROOLER',errors.array());
+  console.log("AUTH--CONTROOLER-000", errors.array());
   if (!errors.isEmpty()) {
     return res.status(402).render("auth/signup", {
       path: "/signup",
       pageTitle: "Signup",
-      errorMessages: errors.array().map(e=>e.msg),
-      infoMessages: null
+      errorMessages: errors.array().map((e) => e.msg),
+      infoMessages: null,
     });
     // return res.status(400).json({ errors: errors.array() });
   }
@@ -46,6 +46,7 @@ const postSignup = (req, res, next) => {
   User.findOne({ email: email })
     .then((userDoc) => {
       if (!userDoc && passwordMatch) {
+        console.log("AUTH--CONTROOLER-2");
         //create user
         bcrypt.hash(password, 12).then((hashedPassword) => {
           console.log(hashedPassword);
@@ -55,6 +56,7 @@ const postSignup = (req, res, next) => {
             cart: { items: [] },
           });
           return user.save().then((result) => {
+            console.log("AUTH--CONTROOLER-3");
             res.redirect("/login");
             // Send an email about signup confirmation
             sendSignupEmail(email);
@@ -63,9 +65,11 @@ const postSignup = (req, res, next) => {
       } else {
         if (userDoc) {
           req.flash("info", "User already exists");
+          console.log("AUTH--CONTROOLER-4");
         }
         if (!passwordMatch) {
           req.flash("info", "Passwords do not match");
+          console.log("AUTH--CONTROOLER-5");
         }
         res.redirect("/signup");
       }

@@ -12,10 +12,7 @@ router.post(
   [
     // email, password, confirmPassword
     // email must be an email
-    body(
-      "email",
-      "Field - The password can only have letters - - @Express validator"
-    )
+    body("email")
       .isEmail()
       .withMessage("Please enter a valid email address - @Express validator")
       .custom((value, { req }) => {
@@ -25,14 +22,17 @@ router.post(
           );
         }
         return true;
-      })
-      .isAlphanumeric(),
+      }),
     // password must be at least 5 chars long
-    body("password")
+    body(
+      "password",
+      "Field - The password can only have letters - - @Express validator"
+    )
       .isLength({ min: 5 })
       .withMessage(
         "Password length must be greater than 5 characters - @Express validator"
-      ),
+      )
+      .isAlphanumeric(),
     body("confirmPassword").custom((value, { req }) => {
       if (value !== req.body.password)
         throw new Error("Passwords must match - @Express validator");
