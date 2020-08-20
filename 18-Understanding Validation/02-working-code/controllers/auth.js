@@ -37,15 +37,11 @@ const postSignup = (req, res, next) => {
     });
     // return res.status(400).json({ errors: errors.array() });
   }
-
-  const { email, password, confirmPassword } = req.body;
-
+  const { email, password } = req.body;
   //check password and confirm password
-  const passwordMatch = password == confirmPassword;
-
   User.findOne({ email: email })
     .then((userDoc) => {
-      if (!userDoc && passwordMatch) {
+      if (!userDoc) {
         console.log("AUTH--CONTROOLER-2");
         //create user
         bcrypt.hash(password, 12).then((hashedPassword) => {
@@ -66,10 +62,6 @@ const postSignup = (req, res, next) => {
         if (userDoc) {
           req.flash("info", "User already exists");
           console.log("AUTH--CONTROOLER-4");
-        }
-        if (!passwordMatch) {
-          req.flash("info", "Passwords do not match");
-          console.log("AUTH--CONTROOLER-5");
         }
         res.redirect("/signup");
       }

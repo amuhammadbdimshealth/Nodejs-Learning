@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const authController = require("../controllers/auth");
 const { body } = require("express-validator");
+const User = require("../models/user");
 
 router.get("/login", authController.getLogin);
 router.get("/signup", authController.getSignup);
@@ -22,6 +23,14 @@ router.post(
           );
         }
         return true;
+      })
+      .custom((value, { req }) => {
+        return User.findOne({ email: value }).then((userDoc) => {
+          if (userDoc) {
+            console.log("Same email", userDoc);
+            return Promise.reject("User already exists - @Express validator");
+          }
+        });
       }),
     // password must be at least 5 chars long
     body(
