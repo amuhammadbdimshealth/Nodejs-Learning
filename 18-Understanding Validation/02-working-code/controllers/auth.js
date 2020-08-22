@@ -87,40 +87,23 @@ const getLogin = (req, res, next) => {
   });
 };
 const postLogin = (req, res, next) => {
-  const { email, password } = req.body;
-  User.findOne({ email: email })
-    .then((user) => {
-      if (user) {
-        console.log("USER FOUND: ", user.email);
-        // compare password
-        bcrypt.compare(password, user.password).then((match) => {
-          // if password mathces then create the session for the user
-          if (match) {
-            console.log("MATHCED PASSWORD: ", match);
-            req.session.user = user;
-            req.session.isLoggedIn = true;
-            req.session.save((err) => {
-              console.log(err);
-              res.redirect("/"); //redirect only when session has been saved
-            });
-          } else {
-            req.flash("errorMessages", [
-              "Incorrect username or password",
-              "Please try again",
-            ]);
-            res.redirect("/login");
-          }
-        });
-      } else {
-        req.flash("errorMessages", [
-          "Incorrect username or password",
-          "Please try again",
-        ]);
-        res.redirect("/login");
-      }
-      // else throw new Error('User not found')
-    })
-    .catch((err) => console.log(err));
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(402).render("auth/login", {
+      path: "/login",
+      pageTitle: "Login",
+      errorMessages: errors.array().map((e) => e.msg),
+      infoMessages: null,
+    });
+  }
+  User.findOne({ email: req.body.email }).then((user) => {
+    req.session.user = user;
+    req.session.isLoggedIn = true;
+    req.session.save((err) => {
+      console.log(err);
+      res.redirect("/"); //redirect only when session has been saved
+    });
+  });
 };
 const postLogout = (req, res, next) => {
   req.session.destroy((err) => {

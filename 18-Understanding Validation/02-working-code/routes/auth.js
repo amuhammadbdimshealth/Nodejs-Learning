@@ -3,11 +3,11 @@ const router = express.Router();
 const authController = require("../controllers/auth");
 const { body } = require("express-validator");
 const User = require("../models/user");
-const { signupValidators } = require("../validators/auth");
+const { signupValidators, loginValidators } = require("../validators/auth");
 
 router.get("/login", authController.getLogin);
 router.get("/signup", authController.getSignup);
-router.post("/login", authController.postLogin);
+router.post("/login", loginValidators, authController.postLogin);
 router.post("/logout", authController.postLogout);
 router.post("/signup", signupValidators, authController.postSignup);
 router.get("/reset", authController.getResetPassword);

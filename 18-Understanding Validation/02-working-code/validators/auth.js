@@ -1,6 +1,6 @@
-const { body } = require('express-validator');
-const User = require('../models/user')
-
+const { body } = require("express-validator");
+const User = require("../models/user");
+const bcrypt = require("bcryptjs");
 const signupValidators = [
   // email, password, confirmPassword
   // email must be an email
@@ -38,6 +38,30 @@ const signupValidators = [
   }),
 ];
 
+const loginValidators = [
+  body("email").custom((value, { req }) => {
+    const { email, password } = req.body;
+    const successOrFailPromise = User.findOne({ email: value }).then((user) => {
+      // check if user is valid
+      if (!user)
+        return Promise.reject(
+          "Incorrect username or password! Please try again - @EXP"
+        );
+      else {
+        // compare password
+        bcrypt.compare(password, user.password).then((match) => {
+          if (!match)
+            return Promise.reject(
+              "Incorrect username or password! Please try again - @EXP"
+            );
+        });
+      }
+    });
+    return successOrFailPromise;
+  }),
+];
+
 module.exports = {
-    signupValidators
-}
+  signupValidators,
+  loginValidators,
+};
