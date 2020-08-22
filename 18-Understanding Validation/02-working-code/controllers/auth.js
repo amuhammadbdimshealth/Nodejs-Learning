@@ -12,7 +12,7 @@ const getSignup = (req, res, next) => {
     path: "/signup",
     pageTitle: "Signup",
     infoMessages: req.flash("info"),
-    errorMessages: null,
+    errorMessages: null   
   });
 };
 const sendSignupEmail = (email) => {
@@ -26,6 +26,7 @@ const sendSignupEmail = (email) => {
   });
 };
 const postSignup = (req, res, next) => {
+  const { email, password, confirmPassword } = req.body;
   const errors = validationResult(req);
   console.log("AUTH--CONTROOLER-000", errors.array());
   if (!errors.isEmpty()) {
@@ -34,10 +35,14 @@ const postSignup = (req, res, next) => {
       pageTitle: "Signup",
       errorMessages: errors.array().map((e) => e.msg),
       infoMessages: null,
+      oldInput: {
+        email,
+        password,
+        confirmPassword,
+      },
     });
     // return res.status(400).json({ errors: errors.array() });
   }
-  const { email, password } = req.body;
   //check password and confirm password
   User.findOne({ email: email })
     .then((userDoc) => {

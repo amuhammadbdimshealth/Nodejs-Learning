@@ -24,13 +24,14 @@ const signupValidators = [
   // password must be at least 5 chars long
   body(
     "password",
-    "Field - The password can only have letters - - @Express validator"
+    "Field - The password can only have letters - @Express validator"
   )
     .isLength({ min: 5 })
     .withMessage(
       "Password length must be greater than 5 characters - @Express validator"
     )
-    .isAlphanumeric(),
+    .isAlphanumeric()
+    .notEmpty().withMessage("Password cannot be empty - @Express validator"),
   body("confirmPassword").custom((value, { req }) => {
     if (value !== req.body.password)
       throw new Error("Passwords must match - @Express validator");
