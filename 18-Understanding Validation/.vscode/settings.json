@@ -1,1 +1,3 @@
-{}
+"emmet.includeLanguages": {
+    "ejs": "html",
+},

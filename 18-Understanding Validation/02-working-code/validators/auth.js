@@ -31,7 +31,8 @@ const signupValidators = [
       "Password length must be greater than 5 characters - @Express validator"
     )
     .isAlphanumeric()
-    .notEmpty().withMessage("Password cannot be empty - @Express validator"),
+    .notEmpty()
+    .withMessage("Password cannot be empty - @Express validator"),
   body("confirmPassword").custom((value, { req }) => {
     if (value !== req.body.password)
       throw new Error("Passwords must match - @Express validator");
@@ -45,15 +46,13 @@ const loginValidators = [
     const successOrFailPromise = User.findOne({ email: value }).then((user) => {
       // check if user is valid
       if (!user)
-        return Promise.reject(
-          "Incorrect username or password! Please try again - @EXP"
-        );
+        return Promise.reject("Incorrect username! Please try again - @EXP");
       else {
         // compare password
-        bcrypt.compare(password, user.password).then((match) => {
+        return bcrypt.compare(password, user.password).then((match) => {
           if (!match)
             return Promise.reject(
-              "Incorrect username or password! Please try again - @EXP"
+              "Incorrect password! Please try again - @EXP"
             );
         });
       }

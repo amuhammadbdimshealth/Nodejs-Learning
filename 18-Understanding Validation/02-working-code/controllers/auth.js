@@ -34,7 +34,7 @@ const postSignup = (req, res, next) => {
       path: "/signup",
       pageTitle: "Signup",
       errorMessages: errors.array(),
-      infoMessages: null,
+      infoMessages: [],
       oldInput: {
         email,
         password,
@@ -76,10 +76,6 @@ const postSignup = (req, res, next) => {
     });
 };
 const getLogin = (req, res, next) => {
-  console.log("9-req.session.isLoggedIn : ", req.session.isLoggedIn);
-  console.log("10-req.session.user : ", req.session.user);
-  console.log("11-req.session.ID : ", req.session.id);
-
   res.render("auth/login", {
     path: "/login",
     pageTitle: "Login",
@@ -92,13 +88,19 @@ const getLogin = (req, res, next) => {
   });
 };
 const postLogin = (req, res, next) => {
+  const { email, password } = req.body;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    console.log(errors.array());
     return res.status(402).render("auth/login", {
       path: "/login",
       pageTitle: "Login",
-      errorMessages: errors.array().map((e) => e.msg),
-      infoMessages: null,
+      errorMessages: errors.array(),
+      infoMessages: [],
+      oldInput: {
+        email,
+        password,
+      },
     });
   }
   User.findOne({ email: req.body.email }).then((user) => {
