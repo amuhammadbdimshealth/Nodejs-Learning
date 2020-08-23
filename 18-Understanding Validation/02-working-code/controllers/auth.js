@@ -12,7 +12,7 @@ const getSignup = (req, res, next) => {
     path: "/signup",
     pageTitle: "Signup",
     infoMessages: req.flash("info"),
-    errorMessages: null   
+    errorMessages: [],
   });
 };
 const sendSignupEmail = (email) => {
@@ -33,7 +33,7 @@ const postSignup = (req, res, next) => {
     return res.status(402).render("auth/signup", {
       path: "/signup",
       pageTitle: "Signup",
-      errorMessages: errors.array().map((e) => e.msg),
+      errorMessages: errors.array(),
       infoMessages: null,
       oldInput: {
         email,

@@ -6,7 +6,7 @@
   <%- include('../includes/navigation.ejs') %> <% if(errorMessages &&
   errorMessages.length > 0) { %> <% for(var m of errorMessages) {%>
   <div class="user-message user-message--error">
-    <%= m %>
+    <%= m.msg %>
   </div>
   <% } %> <% } %> <% if(infoMessages && infoMessages.length > 0) { %> <% for(var
   m of infoMessages) {%>
@@ -19,6 +19,7 @@
       <div class="form-control">
         <label for="email">Email</label>
         <input
+          class="<%= errorMessages.find(e => e.param == 'email') ? 'invalid' : '' %>"
           type="email"
           name="email"
           id="email"
@@ -28,6 +29,7 @@
       <div class="form-control">
         <label for="password">Password</label>
         <input
+          class="<%= errorMessages.find(e => e.param == 'password') ? 'invalid' : '' %>"
           type="password"
           name="password"
           id="password"
@@ -37,6 +39,7 @@
       <div class="form-control">
         <label for="email">Confirm Password</label>
         <input
+          class="<%= errorMessages.find(e => e.param == 'confirmPassword') ? 'invalid' : '' %>"
           type="password"
           name="confirmPassword"
           id="confirmPassword"
