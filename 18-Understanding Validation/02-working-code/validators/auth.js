@@ -20,7 +20,8 @@ const signupValidators = [
           return Promise.reject("User already exists - @Express validator");
         }
       });
-    }),
+    })
+    .normalizeEmail(), //Sanitizer
   // password must be at least 5 chars long
   body(
     "password",
@@ -32,7 +33,8 @@ const signupValidators = [
     )
     .isAlphanumeric()
     .notEmpty()
-    .withMessage("Password cannot be empty - @Express validator"),
+    .withMessage("Password cannot be empty - @Express validator")
+    .trim(),
   body("confirmPassword").custom((value, { req }) => {
     if (value !== req.body.password)
       throw new Error("Passwords must match - @Express validator");
@@ -41,24 +43,30 @@ const signupValidators = [
 ];
 
 const loginValidators = [
-  body("email").custom((value, { req }) => {
-    const { email, password } = req.body;
-    const successOrFailPromise = User.findOne({ email: value }).then((user) => {
-      // check if user is valid
-      if (!user)
-        return Promise.reject("Incorrect username! Please try again - @EXP");
-      else {
-        // compare password
-        return bcrypt.compare(password, user.password).then((match) => {
-          if (!match)
+  body("email")
+    .normalizeEmail() //Sanitizer
+    .custom((value, { req }) => {
+      const { email, password } = req.body;
+      const successOrFailPromise = User.findOne({ email: value }).then(
+        (user) => {
+          // check if user is valid
+          if (!user)
             return Promise.reject(
-              "Incorrect password! Please try again - @EXP"
+              "Incorrect username! Please try again - @EXP"
             );
-        });
-      }
-    });
-    return successOrFailPromise;
-  }),
+          else {
+            // compare password
+            return bcrypt.compare(password, user.password).then((match) => {
+              if (!match)
+                return Promise.reject(
+                  "Incorrect password! Please try again - @EXP"
+                );
+            });
+          }
+        }
+      );
+      return successOrFailPromise;
+    }),
 ];
 
 module.exports = {
