@@ -8,6 +8,7 @@ try {
   console.log(result);
 } catch (error) {
   console.log("An error occurred");
+  console.log(error);
 }
 
 console.log("This code runs after try...catch...block");
