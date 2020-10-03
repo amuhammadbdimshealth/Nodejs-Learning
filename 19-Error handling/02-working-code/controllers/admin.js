@@ -3,6 +3,22 @@ const ObjectId = mongodb.ObjectId;
 const Product = require("../models/product");
 const product = require("../models/product");
 const { validationResult } = require("express-validator");
+const mongoose = require("mongoose");
+
+// Utility function
+function renderAddEditProductWithError(config) {
+  const { res, pageTitle, path, isEditing, errorsMsgs, product, status=402 } = config;
+  console.log(errorsMsgs);
+  return res.status(status).render("admin/edit-product", {
+    pageTitle: pageTitle,
+    path: path,
+    editing: isEditing,
+    errorMessages: errorsMsgs,
+    infoMessages: [],
+    hasError: true,
+    product: product,
+  });
+}
 
 // MIDDLEWARES - FOR HTTP GET REQUESTS
 exports.getAddProduct = (req, res, next) => {
@@ -72,14 +88,12 @@ exports.postAddProduct = (req, res, next) => {
   const { title, imageUrl, description, price } = req.body;
 
   if (!errors.isEmpty()) {
-    console.log(errors.array());
-    return res.status(402).render("admin/edit-product", {
+    return renderAddEditProductWithError({
+      res: res,
       pageTitle: "Add Product",
       path: "/admin/add-product",
-      editing: false,
-      errorMessages: errors.array(),
-      infoMessages: [],
-      hasError: true,
+      isEditing: false,
+      errorsMsgs: errors.array(),
       product: {
         title,
         imageUrl,
@@ -87,10 +101,26 @@ exports.postAddProduct = (req, res, next) => {
         description,
       },
     });
-    // return res.status(400).json({ errors: errors.array() });
+
+    // console.log(errors.array());
+    // return res.status(402).render("admin/edit-product", {
+    //   pageTitle: "Add Product",
+    //   path: "/admin/add-product",
+    //   editing: false,
+    //   errorMessages: errors.array(),
+    //   infoMessages: [],
+    //   hasError: true,
+    //   product: {
+    //     title,
+    //     imageUrl,
+    //     price,
+    //     description,
+    //   },
+    // });
   }
 
   const product = new Product({
+    // _id: new mongoose.Types.ObjectId("5f7599818665d61770c7c1bc"),
     title: title,
     imageUrl: imageUrl,
     description: description,
@@ -104,7 +134,20 @@ exports.postAddProduct = (req, res, next) => {
       res.redirect("/admin/products");
     })
     .catch((err) => {
-      console.log(err);
+      renderAddEditProductWithError({
+        res: res,
+        pageTitle: "Add Product",
+        path: "/admin/add-product",
+        isEditing: false,
+        errorsMsgs: [{ msg: "DB Error" }],
+        product: {
+          title,
+          imageUrl,
+          price,
+          description,
+        },
+        status: 500
+      });
     });
 };
 
@@ -113,14 +156,12 @@ exports.postEditProduct = (req, res, next) => {
   const { productId, title, price, imageUrl, description } = req.body;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    console.log(errors.array());
-    return res.status(402).render("admin/edit-product", {
+    return renderAddEditProductWithError({
+      res: res,
       pageTitle: "Edit Product",
       path: "/admin/edit-product",
-      editing: true,
-      errorMessages: errors.array(),
-      infoMessages: [],
-      hasError: true,
+      isEditing: true,
+      errorsMsgs: errors.array(),
       product: {
         title,
         imageUrl,
@@ -129,7 +170,23 @@ exports.postEditProduct = (req, res, next) => {
         _id: productId,
       },
     });
-    // return res.status(400).json({ errors: errors.array() });
+
+    // console.log(errors.array());
+    // return res.status(402).render("admin/edit-product", {
+    //   pageTitle: "Edit Product",
+    //   path: "/admin/edit-product",
+    //   editing: true,
+    //   errorMessages: errors.array(),
+    //   infoMessages: [],
+    //   hasError: true,
+    //   product: {
+    //     title,
+    //     imageUrl,
+    //     price,
+    //     description,
+    //     _id: productId,
+    //   },
+    // });
   }
   // check if logged in user is the owner of this product before editing
   const loggedUserId = req.user._id.toString();
