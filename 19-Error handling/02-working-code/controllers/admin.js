@@ -7,7 +7,15 @@ const mongoose = require("mongoose");
 
 // Utility function
 function renderAddEditProductWithError(config) {
-  const { res, pageTitle, path, isEditing, errorsMsgs, product, status=402 } = config;
+  const {
+    res,
+    pageTitle,
+    path,
+    isEditing,
+    errorsMsgs,
+    product,
+    status = 402,
+  } = config;
   console.log(errorsMsgs);
   return res.status(status).render("admin/edit-product", {
     pageTitle: pageTitle,
@@ -101,22 +109,6 @@ exports.postAddProduct = (req, res, next) => {
         description,
       },
     });
-
-    // console.log(errors.array());
-    // return res.status(402).render("admin/edit-product", {
-    //   pageTitle: "Add Product",
-    //   path: "/admin/add-product",
-    //   editing: false,
-    //   errorMessages: errors.array(),
-    //   infoMessages: [],
-    //   hasError: true,
-    //   product: {
-    //     title,
-    //     imageUrl,
-    //     price,
-    //     description,
-    //   },
-    // });
   }
 
   const product = new Product({
@@ -134,20 +126,21 @@ exports.postAddProduct = (req, res, next) => {
       res.redirect("/admin/products");
     })
     .catch((err) => {
-      renderAddEditProductWithError({
-        res: res,
-        pageTitle: "Add Product",
-        path: "/admin/add-product",
-        isEditing: false,
-        errorsMsgs: [{ msg: "DB Error" }],
-        product: {
-          title,
-          imageUrl,
-          price,
-          description,
-        },
-        status: 500
-      });
+      // renderAddEditProductWithError({
+      //   res: res,
+      //   pageTitle: "Add Product",
+      //   path: "/admin/add-product",
+      //   isEditing: false,
+      //   errorsMsgs: [{ msg: "DB Error" }],
+      //   product: {
+      //     title,
+      //     imageUrl,
+      //     price,
+      //     description,
+      //   },
+      //   status: 500,
+      // });
+      res.redirect("/500");
     });
 };
 

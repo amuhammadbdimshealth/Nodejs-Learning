@@ -10,6 +10,7 @@ const errorController = require("./controllers/error");
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
+const errorRoutes = require("./routes/error");
 const User = require("./models/user");
 const mongoose = require("mongoose"); // Mongoose
 const csrf = require("csurf"); // CSRF Protection
@@ -82,6 +83,7 @@ app.use((req, res, next) => {
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
+app.use(errorRoutes);
 
 // Start server once connected to DB
 mongoose

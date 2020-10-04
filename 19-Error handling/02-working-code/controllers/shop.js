@@ -17,7 +17,7 @@ exports.getProducts = (req, res, next) => {
         prods: products,
         pageTitle: "All Products",
         path: "/products",
-        isAuthenticated: req.session.isLoggedIn
+        // isAuthenticated: req.session.isLoggedIn
       });
     })
     .catch(err => {
@@ -38,7 +38,7 @@ exports.getProduct = (req, res, next) => {
         product: product,
         pageTitle: product.title,
         path: "/products",
-        isAuthenticated: req.session.isLoggedIn
+        // isAuthenticated: req.session.isLoggedIn
       });
     })
     .catch(err => {
@@ -63,7 +63,7 @@ exports.getIndex = (req, res, next) => {
         // isAuthenticatedsession.: globalServerVariables.isAuthenticated
         // isAuthenticated: req.isLoggedIn
         // isAuthenticated: loggedInCookie
-        isAuthenticated: req.session.isLoggedIn,
+        // isAuthenticated: req.session.isLoggedIn,
         csrfToken: req.csrfToken()
       });
     })
