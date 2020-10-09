@@ -11,10 +11,11 @@ const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
 const errorRoutes = require("./routes/error");
+const errorRoutesPlayground = require("./playground/error-route");
 const User = require("./models/user");
 const mongoose = require("mongoose"); // Mongoose
 const csrf = require("csurf"); // CSRF Protection
-const flash = require('connect-flash'); // Flash error messages
+const flash = require("connect-flash"); // Flash error messages
 const express = require("express");
 
 //----------------------------------------------------------------------------
@@ -39,12 +40,12 @@ store.on("error", function (error) {
 // CSRF
 const csrfProtection = csrf();
 //----------------------------------------------------------------------------
-// View engine 
+// View engine
 app.set("view engine", "ejs");
 app.set("views", "views");
 
 //----------------------------------------------------------------------------
-// Middlewares 
+// Middlewares
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
@@ -52,7 +53,7 @@ app.use(
     secret: "mysecret",
     resave: false,
     saveUninitialized: false,
-    store: store
+    store: store,
   })
 );
 app.use(flash());
@@ -62,7 +63,7 @@ app.use((req, res, next) => {
   if (req.session.user) {
     User.findById(req.session.user._id)
       .then((user) => {
-        req.user = user; //mongoose model. we do not need to create user object again        
+        req.user = user; //mongoose model. we do not need to create user object again
         next();
       })
       .catch((err) => console.log(err));
@@ -79,15 +80,16 @@ app.use((req, res, next) => {
 });
 
 //----------------------------------------------------------------------------
-// Routes 
+// Routes
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
-app.use(errorRoutes);
+app.use(errorRoutesPlayground);
+// app.use(errorRoutes);
 
 // Start server once connected to DB
 mongoose
-  .connect(MONGODB_URI, {useNewUrlParser: true, useUnifiedTopology: true})
+  .connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     app.listen(4000);
   })
