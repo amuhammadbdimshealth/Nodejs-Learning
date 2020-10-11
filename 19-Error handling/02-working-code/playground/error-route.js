@@ -91,13 +91,14 @@ function clientErrorHandler(err, req, res, next) {
 }
 // catch-all errors
 function errorHandler(err, req, res, next) {
-  res.status(500).render("error/500", {
-    pageTitle: "Error",
-    path: "/500",
-    error: err,
-    // isAuthenticated: false
-  });
+  // res.status(500).render("error/500", {
+  //   pageTitle: "Error",
+  //   path: "/500",
+  //   error: err,
+  // });
+  res.redirect("/500");
 }
+// chaining error handlers
 router.use(logErrors, clientErrorHandler, errorHandler);
 
 router.use(errorController.get404);
