@@ -85,7 +85,20 @@ app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 app.use(errorRoutesPlayground);
-// app.use(errorRoutes);
+app.use(errorRoutes);
+
+/** Error handling
+ * https://expressjs.com/en/guide/error-handling.html
+ */
+app.use(function (err, req, res, next) {
+  console.log("CAUGHT");
+  res.status(500).render("error/500", {
+    pageTitle: "Error",
+    path: "/500",
+    error: err,
+  });
+  // res.redirect("/500");
+});
 
 // Start server once connected to DB
 mongoose

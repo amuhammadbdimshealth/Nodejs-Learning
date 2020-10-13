@@ -249,3 +249,7 @@ https://expressjs.com/en/guide/error-handling.html
 https://stackoverflow.com/questions/62882503/express-error-handling-middleware-best-practice
 
 https://medium.com/@SigniorGratiano/express-error-handling-674bfdd86139
+
+https://levelup.gitconnected.com/how-to-handle-errors-in-an-express-and-node-js-app-cb4fe2907ed9
+
+https://dev.to/nedsoft/central-error-handling-in-express-3aej

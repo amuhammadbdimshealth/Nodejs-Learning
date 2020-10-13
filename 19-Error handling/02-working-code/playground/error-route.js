@@ -3,8 +3,6 @@ const router = express.Router();
 const errorController = require("../controllers/error");
 const fs = require("fs");
 
-router.get("/500", errorController.get500);
-
 router.get("/throw-error-sync", function (req, res, next) {
   console.log("THROW ERROR SYNC!!");
   throw new Error("BROKEN");
@@ -78,6 +76,7 @@ router.get("/chain-of-handlers", [
  * The error is handled by default error handler
  * But you can define your own default handler as below
  */
+
 function logErrors(err, req, res, next) {
   console.error(err.stack);
   next(err);
@@ -91,15 +90,16 @@ function clientErrorHandler(err, req, res, next) {
 }
 // catch-all errors
 function errorHandler(err, req, res, next) {
-  // res.status(500).render("error/500", {
-  //   pageTitle: "Error",
-  //   path: "/500",
-  //   error: err,
-  // });
-  res.redirect("/500");
+  res.status(500).render("error/500", {
+    pageTitle: "Error",
+    path: "/500",
+    error: err,
+  });
+  // res.redirect("/500");
 }
 // chaining error handlers
-router.use(logErrors, clientErrorHandler, errorHandler);
+router.use(logErrors, clientErrorHandler, errorHandler); // this is incorrect practice to define routes for error handlers. You should rather define it in app.js after all middlewares and route handlers at the bottom.
+// You define error-handling middleware last, after other app.use() and routes calls
 
 router.use(errorController.get404);
 
