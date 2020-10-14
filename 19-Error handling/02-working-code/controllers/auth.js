@@ -35,7 +35,7 @@ const postSignup = (req, res, next) => {
   });
 
   if (!errors.isEmpty()) {
-    return res.status(402).render("auth/signup", {
+    return res.status(422).render("auth/signup", {
       path: "/signup",
       pageTitle: "Signup",
       errorMessages: errors.array(),
@@ -98,7 +98,7 @@ const postLogin = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors.array());
-    return res.status(402).render("auth/login", {
+    return res.status(422).render("auth/login", {
       path: "/login",
       pageTitle: "Login",
       errorMessages: errors.array(),

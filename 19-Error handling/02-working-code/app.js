@@ -57,6 +57,12 @@ app.use(
   })
 );
 app.use(flash());
+app.use(csrfProtection);
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
 
 // Store the currently logged-in user in the request object from the session
 app.use((req, res, next) => {
@@ -66,17 +72,12 @@ app.use((req, res, next) => {
         req.user = user; //mongoose model. we do not need to create user object again
         next();
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        next(err);
+      });
   } else {
     next();
   }
-});
-
-app.use(csrfProtection);
-app.use((req, res, next) => {
-  res.locals.isAuthenticated = req.session.isLoggedIn;
-  res.locals.csrfToken = req.csrfToken();
-  next();
 });
 
 //----------------------------------------------------------------------------

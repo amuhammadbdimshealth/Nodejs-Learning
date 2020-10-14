@@ -14,7 +14,7 @@ function renderAddEditProductWithError(config) {
     isEditing,
     errorsMsgs,
     product,
-    status = 402,
+    status = 422,
   } = config;
   console.log(errorsMsgs);
   return res.status(status).render("admin/edit-product", {
