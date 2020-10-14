@@ -66,7 +66,7 @@ exports.getEditProduct = (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.log(err);
+      next(err);
     });
 };
 
@@ -87,6 +87,7 @@ exports.getProducts = (req, res, next) => {
     })
     .catch((err) => {
       console.log(products);
+      next(err);
     });
 };
 
@@ -126,21 +127,8 @@ exports.postAddProduct = (req, res, next) => {
       res.redirect("/admin/products");
     })
     .catch((err) => {
-      // renderAddEditProductWithError({
-      //   res: res,
-      //   pageTitle: "Add Product",
-      //   path: "/admin/add-product",
-      //   isEditing: false,
-      //   errorsMsgs: [{ msg: "DB Error" }],
-      //   product: {
-      //     title,
-      //     imageUrl,
-      //     price,
-      //     description,
-      //   },
-      //   status: 500,
-      // });
-      res.redirect("/500");
+      // Pass the error to a central error handler
+      next(err);
     });
 };
 
@@ -163,23 +151,6 @@ exports.postEditProduct = (req, res, next) => {
         _id: productId,
       },
     });
-
-    // console.log(errors.array());
-    // return res.status(402).render("admin/edit-product", {
-    //   pageTitle: "Edit Product",
-    //   path: "/admin/edit-product",
-    //   editing: true,
-    //   errorMessages: errors.array(),
-    //   infoMessages: [],
-    //   hasError: true,
-    //   product: {
-    //     title,
-    //     imageUrl,
-    //     price,
-    //     description,
-    //     _id: productId,
-    //   },
-    // });
   }
   // check if logged in user is the owner of this product before editing
   const loggedUserId = req.user._id.toString();
@@ -198,7 +169,7 @@ exports.postEditProduct = (req, res, next) => {
           console.log("UPDATED PRODUCT : ", updatedProd);
           res.redirect("/admin/products");
         })
-        .catch((err) => console.log(err));
+        .catch((err) => next(err));
     } else {
       console.log("YOU ARE NOT THE PRODUCT OWNER");
       res.redirect("/admin/products");
@@ -218,6 +189,7 @@ exports.postDeleteProduct = (req, res, next) => {
         })
         .catch((err) => {
           console.log(err);
+          next(err);
         });
     } else {
       console.log("YOU ARE NOT THE PRODUCT OWNER");

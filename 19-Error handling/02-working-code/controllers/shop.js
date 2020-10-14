@@ -4,14 +4,14 @@ const User = require("../models/user");
 const Order = require("../models/order");
 
 // UTILITIES
-const globalServerVariables = require('../util/global-variables');
-const globalFunctions = require('../util/global-functions');
+const globalServerVariables = require("../util/global-variables");
+const globalFunctions = require("../util/global-functions");
 
 // GET REQUEST HANDLERS
 exports.getProducts = (req, res, next) => {
   //MONGO
   Product.find()
-    .then(products => {
+    .then((products) => {
       console.log("Controller_getProducts->", products);
       res.render("shop/product-list", {
         prods: products,
@@ -20,8 +20,9 @@ exports.getProducts = (req, res, next) => {
         // isAuthenticated: req.session.isLoggedIn
       });
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
+      next(err);
     });
 };
 /**
@@ -32,7 +33,7 @@ exports.getProduct = (req, res, next) => {
   //MONGO
   const prodId = req.params.productId;
   Product.findById(prodId)
-    .then(product => {
+    .then((product) => {
       console.log(product);
       res.render("shop/product-detail", {
         product: product,
@@ -41,8 +42,9 @@ exports.getProduct = (req, res, next) => {
         // isAuthenticated: req.session.isLoggedIn
       });
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
+      next(err);
     });
 };
 exports.getIndex = (req, res, next) => {
@@ -51,10 +53,10 @@ exports.getIndex = (req, res, next) => {
   //   .get("Cookie")
   //   .split(";")[1]
   //   .trim()
-  //   .split("=")[1] == 'true';  
+  //   .split("=")[1] == 'true';
 
   Product.find()
-    .then(products => {
+    .then((products) => {
       // console.log("Controller_Index->", products);
       res.render("shop/index", {
         prods: products,
@@ -64,11 +66,12 @@ exports.getIndex = (req, res, next) => {
         // isAuthenticated: req.isLoggedIn
         // isAuthenticated: loggedInCookie
         // isAuthenticated: req.session.isLoggedIn,
-        csrfToken: req.csrfToken()
+        csrfToken: req.csrfToken(),
       });
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
+      next(err);
     });
 };
 exports.getCart = (req, res, next) => {
@@ -79,7 +82,7 @@ exports.getCart = (req, res, next) => {
   req.user
     .populate({ path: "cart.items.productId" })
     .execPopulate()
-    .then(pUser => {
+    .then((pUser) => {
       console.log("63-cartItems", pUser.cart);
       const cartItems = pUser.cart.items;
       const totalPrice = cartItems.reduce(
@@ -92,21 +95,20 @@ exports.getCart = (req, res, next) => {
         path: "/cart",
         pageTitle: "Your Cart",
         cart: cart,
-        isAuthenticated: req.session.isLoggedIn
+        isAuthenticated: req.session.isLoggedIn,
       });
     });
 };
 exports.getOrders = (req, res, next) => {
   Order.find({
-    'user.userId' : req.user._id
-  })
-  .then(orders => {
+    "user.userId": req.user._id,
+  }).then((orders) => {
     // console.log('ORDER-PRODUCT ==============> ',orders[0].products);
     res.render("shop/orders", {
       orders: orders,
       pageTitle: "Your Orders",
       path: "/orders",
-      isAuthenticated: req.session.isLoggedIn
+      isAuthenticated: req.session.isLoggedIn,
     });
   });
 };
@@ -114,41 +116,47 @@ exports.getCheckout = (req, res, next) => {
   res.render("shop/checkout", {
     pageTitle: "Checkout",
     path: "/checkout",
-    isAuthenticated: req.session.isLoggedIn
+    isAuthenticated: req.session.isLoggedIn,
   });
 };
 // POST REQUEST HANDLERS
 exports.postCart = (req, res, next) => {
   const prodId = req.body.productId;
   Product.findById(prodId)
-    .then(product => {
+    .then((product) => {
       return req.user.addToCart(product);
     })
-    .then(result => {
+    .then((result) => {
       res.redirect("/cart");
     })
-    .catch(err => console.log(err));
+    .catch((err) => {
+      console.log(err);
+      next(err);
+    });
 };
 exports.postCartDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
   console.log("DELETE CART ITEM...", prodId);
   req.user
     .deleteFromCart(prodId)
-    .then(result => {
+    .then((result) => {
       console.log("111-DELETED CART ITEM...", result, "END-111");
       res.redirect("/cart");
     })
-    .catch(err => console.log(err));
+    .catch((err) => {
+      console.log(err);
+      next(err);
+    });
 };
 exports.postOrder = (req, res, next) => {
   req.user
     .populate("cart.items.productId")
     .execPopulate()
-    .then(pUser => {
-      const userCartItems = pUser.cart.items.map(item => {
+    .then((pUser) => {
+      const userCartItems = pUser.cart.items.map((item) => {
         const mItem = {
           quantity: item.quantity,
-          product: { ...item.productId._doc }
+          product: { ...item.productId._doc },
         };
         return mItem;
       });
@@ -157,13 +165,13 @@ exports.postOrder = (req, res, next) => {
       const order = new Order({
         user: {
           userId: req.user._id,
-          email: req.user.email
+          email: req.user.email,
         },
-        products: userCartItems
+        products: userCartItems,
       });
       return order.save();
     })
-    .then(result => {
+    .then((result) => {
       return req.user.clearCart();
     })
     .then(() => res.redirect("/orders"));

@@ -78,6 +78,7 @@ const postSignup = (req, res, next) => {
     })
     .catch((err) => {
       console.log(err);
+      next(err);
     });
 };
 const getLogin = (req, res, next) => {
@@ -237,6 +238,7 @@ const postNewPassword = (req, res, next) => {
     })
     .catch((err) => {
       console.log(err);
+      next(err);
     });
   // check if resetToken is still valid
   // update the password after hashing
