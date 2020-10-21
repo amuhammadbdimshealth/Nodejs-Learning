@@ -1,6 +1,9 @@
 # S20 | Introduction
 
 ---
+https://www.npmjs.com/package/express-fileupload
+https://stackabuse.com/handling-file-uploads-in-node-js-with-expres-and-multer/
+https://www.npmjs.com/package/multer
 
 ## Notes
 
