@@ -11,13 +11,15 @@ const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
 const errorRoutes = require("./routes/error");
-const errorRoutesPlayground = require("./playground/error-route");
 const User = require("./models/user");
 const mongoose = require("mongoose"); // Mongoose
 const csrf = require("csurf"); // CSRF Protection
 const flash = require("connect-flash"); // Flash error messages
 const express = require("express");
-// const multer = require("multer");
+const multer = require("multer");
+const helpers = require("./playground/helpers");
+const errorRoutesPlayground = require("./playground/error-route");
+const fileuploadRoutesPlayground = require("./playground/fileupload-route");
 
 //----------------------------------------------------------------------------
 // App
@@ -39,19 +41,19 @@ store.on("error", function (error) {
 });
 
 // Image store
-// const imageStorage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, "uploads/");
-//   },
+const imageStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
 
-//   // By default, multer removes file extensions so let's add them back
-//   filename: function (req, file, cb) {
-//     cb(
-//       null,
-//       file.fieldname + "-" + Date.now() + path.extname(file.originalname)
-//     );
-//   },
-// });
+  // By default, multer removes file extensions so let's add them back
+  filename: function (req, file, cb) {
+    cb(
+      null,
+      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
+    );
+  },
+});
 
 // CSRF
 const csrfProtection = csrf();
@@ -98,9 +100,43 @@ app.use((req, res, next) => {
 
 //----------------------------------------------------------------------------
 // Routes
-// app.use((req, res, next) => {
-//   res.sendFile(path.join(__dirname, "playground", "fileupload.html"));
-// });
+// app.use(fileuploadRoutesPlayground);
+app.get("/getfileupload", (req, res, next) => {
+  res.render("playground/fileupload", {
+    pageTitle: "fileUpload",
+    test: "Arif",
+  });
+});
+
+app.post("/upload-profile-pic", (req, res) => {
+  console.log("UPLOADING...", req.body._csrf);
+  // 'profile_pic' is the name of our file input field in the HTML form
+  let upload = multer({
+    storage: imageStorage,
+    fileFilter: helpers.imageFilter,
+  }).single("profile_pic");
+
+  upload(req, res, function (err) {
+    // req.file contains information of uploaded file
+    // req.body contains information of text fields, if there were any
+    console.log(req.file, err);
+
+    if (req.fileValidationError) {
+      return res.send(req.fileValidationError);
+    } else if (!req.file) {
+      return res.send("Please select an image to upload");
+    } else if (err instanceof multer.MulterError) {
+      return res.send(err);
+    } else if (err) {
+      return res.send(err);
+    }
+
+    // Display uploaded image for user validation
+    res.send(
+      `You have uploaded this image: <hr/><img src="${req.file.path}" width="500"><hr /><a href="./">Upload another image</a>`
+    );
+  });
+});
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
@@ -110,16 +146,18 @@ app.use(errorRoutes);
 /** Error handling
  * https://expressjs.com/en/guide/error-handling.html
  */
+/*
 app.use(function (err, req, res, next) {
   console.log("CAUGHT");
   res.status(500).render("error/500", {
     pageTitle: "Error",
     path: "/500",
     error: err,
+    isAuthenticated: true,
   });
   // res.redirect("/500");
 });
-
+*/
 // Start server once connected to DB
 mongoose
   .connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })

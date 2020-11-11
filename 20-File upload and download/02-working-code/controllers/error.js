@@ -10,6 +10,6 @@ exports.get500 = (req, res, next) => {
     pageTitle: "Error",
     path: "/500",
     error: null,
-    // isAuthenticated: false
+    // isAuthenticated: false,
   });
 };
