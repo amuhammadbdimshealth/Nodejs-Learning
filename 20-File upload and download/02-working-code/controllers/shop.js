@@ -66,7 +66,7 @@ exports.getIndex = (req, res, next) => {
         // isAuthenticated: req.isLoggedIn
         // isAuthenticated: loggedInCookie
         // isAuthenticated: req.session.isLoggedIn,
-        csrfToken: req.csrfToken(),
+        // csrfToken: req.csrfToken(),
       });
     })
     .catch((err) => {

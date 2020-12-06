@@ -66,6 +66,7 @@ app.set("views", "views");
 // Middlewares
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
+app.use('uploads',express.static(path.join(__dirname, "public")));
 app.use(
   session({
     secret: "mysecret",
@@ -100,43 +101,7 @@ app.use((req, res, next) => {
 
 //----------------------------------------------------------------------------
 // Routes
-// app.use(fileuploadRoutesPlayground);
-app.get("/getfileupload", (req, res, next) => {
-  res.render("playground/fileupload", {
-    pageTitle: "fileUpload",
-    test: "Arif",
-  });
-});
-
-app.post("/upload-profile-pic", (req, res) => {
-  console.log("UPLOADING...", req.body._csrf);
-  // 'profile_pic' is the name of our file input field in the HTML form
-  let upload = multer({
-    storage: imageStorage,
-    fileFilter: helpers.imageFilter,
-  }).single("profile_pic");
-
-  upload(req, res, function (err) {
-    // req.file contains information of uploaded file
-    // req.body contains information of text fields, if there were any
-    console.log(req.file, err);
-
-    if (req.fileValidationError) {
-      return res.send(req.fileValidationError);
-    } else if (!req.file) {
-      return res.send("Please select an image to upload");
-    } else if (err instanceof multer.MulterError) {
-      return res.send(err);
-    } else if (err) {
-      return res.send(err);
-    }
-
-    // Display uploaded image for user validation
-    res.send(
-      `You have uploaded this image: <hr/><img src="${req.file.path}" width="500"><hr /><a href="./">Upload another image</a>`
-    );
-  });
-});
+// app.use( );
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
