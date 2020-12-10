@@ -56,6 +56,16 @@ const imageStorage = multer.diskStorage({
   },
 });
 
+// File filter
+const fileFilter = function (req, file, cb) {
+  if (
+    file.mimetype == 'image/png' || 
+    file.mimetype == 'image/jpg'|| 
+    file.mimetype == 'image/jpeg') {
+    return cb(null, true)
+  } else return cb(null, false)
+}
+
 // CSRF
 const csrfProtection = csrf();
 //----------------------------------------------------------------------------
@@ -71,7 +81,10 @@ app.use(express.static(path.join(__dirname, "public")));
  * The destination directory for uploaded files. If storage is not set and dest is, Multer will create a DiskStorage instance configured to store files at dest with random filenames.
 */
 // app.use(multer({dest: 'uploads'}).single('image'))
-app.use(multer({storage: imageStorage}).single('image'))
+app.use(multer({
+  storage: imageStorage, 
+  fileFilter: fileFilter})
+  .single('image'))
 
 app.use(
   session({
