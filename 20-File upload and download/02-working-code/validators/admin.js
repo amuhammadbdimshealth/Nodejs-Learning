@@ -6,9 +6,9 @@ const addProductValidators = [
     .isAlphanumeric()
     .withMessage("Title can contain only letters and numbers")
     .trim(),
-  body("imageUrl")
-    .isString()
-    .withMessage("Invalid image url"),
+  // body("imageUrl")
+  //   .isString()
+  //   .withMessage("Invalid image url"),
   body("price")
     .isDecimal({
       decimal_digits: 2,

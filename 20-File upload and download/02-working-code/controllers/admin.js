@@ -94,7 +94,9 @@ exports.getProducts = (req, res, next) => {
 // MIDDLEWARES - FOR HTTP POST REQUESTS
 exports.postAddProduct = (req, res, next) => {
   const errors = validationResult(req);
-  const { title, imageUrl, description, price } = req.body;
+  const { title, description, price } = req.body;
+  const imageUrl = req.file;
+  console.log(imageUrl);
 
   if (!errors.isEmpty()) {
     return renderAddEditProductWithError({

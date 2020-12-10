@@ -20,6 +20,7 @@ const multer = require("multer");
 const helpers = require("./playground/helpers");
 const errorRoutesPlayground = require("./playground/error-route");
 const fileuploadRoutesPlayground = require("./playground/fileupload-route");
+const { diskStorage } = require("multer");
 
 //----------------------------------------------------------------------------
 // App
@@ -50,7 +51,7 @@ const imageStorage = multer.diskStorage({
   filename: function (req, file, cb) {
     cb(
       null,
-      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
+       Date.now() + '-' + file.originalname
     );
   },
 });
@@ -66,7 +67,12 @@ app.set("views", "views");
 // Middlewares
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
-app.use('uploads',express.static(path.join(__dirname, "public")));
+/** 
+ * The destination directory for uploaded files. If storage is not set and dest is, Multer will create a DiskStorage instance configured to store files at dest with random filenames.
+*/
+app.use(multer({dest: 'uploads'}).single('image'))
+// app.use(multer({storage: imageStorage}).single('image'))
+
 app.use(
   session({
     secret: "mysecret",
@@ -111,7 +117,6 @@ app.use(errorRoutes);
 /** Error handling
  * https://expressjs.com/en/guide/error-handling.html
  */
-/*
 app.use(function (err, req, res, next) {
   console.log("CAUGHT");
   res.status(500).render("error/500", {
@@ -119,10 +124,9 @@ app.use(function (err, req, res, next) {
     path: "/500",
     error: err,
     isAuthenticated: true,
-  });
-  // res.redirect("/500");
+  });  
 });
-*/
+
 // Start server once connected to DB
 mongoose
   .connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
