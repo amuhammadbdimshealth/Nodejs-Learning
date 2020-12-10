@@ -70,8 +70,8 @@ app.use(express.static(path.join(__dirname, "public")));
 /** 
  * The destination directory for uploaded files. If storage is not set and dest is, Multer will create a DiskStorage instance configured to store files at dest with random filenames.
 */
-app.use(multer({dest: 'uploads'}).single('image'))
-// app.use(multer({storage: imageStorage}).single('image'))
+// app.use(multer({dest: 'uploads'}).single('image'))
+app.use(multer({storage: imageStorage}).single('image'))
 
 app.use(
   session({
