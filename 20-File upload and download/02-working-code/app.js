@@ -77,6 +77,7 @@ app.set("views", "views");
 // Middlewares
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
+app.use('/uploads',express.static(path.join(__dirname, "uploads")));
 /** 
  * The destination directory for uploaded files. If storage is not set and dest is, Multer will create a DiskStorage instance configured to store files at dest with random filenames.
 */
