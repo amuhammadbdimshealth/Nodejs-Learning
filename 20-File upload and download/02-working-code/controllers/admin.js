@@ -95,9 +95,24 @@ exports.getProducts = (req, res, next) => {
 exports.postAddProduct = (req, res, next) => {
   const errors = validationResult(req);
   const { title, description, price } = req.body;
-  const imageUrl = req.file;
-  console.log(imageUrl);
+  const image = req.file;
 
+  if (!image) {
+    // No image file selected
+    return renderAddEditProductWithError({
+      status: 422,
+      res: res,
+      pageTitle: "Add Product",
+      path: "/admin/add-product",
+      isEditing: false,
+      errorsMsgs: [{ msg: "Attached file is not an image" }],
+      product: {
+        title,
+        price,
+        description,
+      },
+    });
+  }
   if (!errors.isEmpty()) {
     return renderAddEditProductWithError({
       res: res,
@@ -107,13 +122,15 @@ exports.postAddProduct = (req, res, next) => {
       errorsMsgs: errors.array(),
       product: {
         title,
-        imageUrl,
+        image,
         price,
         description,
       },
     });
   }
 
+  const imageUrl = image.path;
+  console.log("imageUrl", imageUrl);
   const product = new Product({
     // _id: new mongoose.Types.ObjectId("5f7599818665d61770c7c1bc"),
     title: title,
@@ -136,7 +153,10 @@ exports.postAddProduct = (req, res, next) => {
 
 exports.postEditProduct = (req, res, next) => {
   // get the updated product from the req
-  const { productId, title, price, imageUrl, description } = req.body;
+  const { productId, title, price, description } = req.body;
+  const newImage = req.file;
+  let imageUrl = null;
+
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return renderAddEditProductWithError({
@@ -159,7 +179,12 @@ exports.postEditProduct = (req, res, next) => {
   Product.findOne({ _id: productId, userid: loggedUserId }).then((product) => {
     if (product) {
       console.log("YOU THE PRODUCT OWNER", product);
+      
       // replace the product in the DB/file with the updated product
+      if (newImage) {
+        imageUrl = newImage.path;
+      } else imageUrl = product.imageUrl;
+
       product
         .updateOne({
           title,
