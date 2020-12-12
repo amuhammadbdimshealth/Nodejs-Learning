@@ -2,7 +2,8 @@ const Product = require("../models/product");
 const User = require("../models/user");
 // const Cart = require("../models/cart");
 const Order = require("../models/order");
-
+const fs = require("fs");
+const path = require("path");
 // UTILITIES
 const globalServerVariables = require("../util/global-variables");
 const globalFunctions = require("../util/global-functions");
@@ -119,6 +120,22 @@ exports.getCheckout = (req, res, next) => {
     isAuthenticated: req.session.isLoggedIn,
   });
 };
+
+exports.getInvoice = (req, res, next) => {
+  const orderId = req.params.orderId;
+  const invoiceName = `invoice-${orderId}.pdf`;
+  const invoicePath = path.join("data", "invoices", invoiceName);
+
+  fs.readFile(invoicePath, (err, data) => {
+    if (err) {
+      return next(err);
+    }
+    res.send(data);
+  });
+  // res.send("Invoice downloading..." + orderId);
+};
+
+
 // POST REQUEST HANDLERS
 exports.postCart = (req, res, next) => {
   const prodId = req.body.productId;
