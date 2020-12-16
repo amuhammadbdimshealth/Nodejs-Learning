@@ -129,7 +129,9 @@ exports.getInvoice = (req, res, next) => {
   fs.readFile(invoicePath, (err, data) => {
     if (err) {
       return next(err);
-    }
+    }   
+    res.setHeader('Content-Type','application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="${invoiceName}"`)
     res.send(data);
   });
   // res.send("Invoice downloading..." + orderId);
