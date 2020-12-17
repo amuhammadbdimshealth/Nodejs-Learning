@@ -95,13 +95,6 @@ app.use(
     store: store,
   })
 );
-app.use(flash());
-app.use(csrfProtection);
-app.use((req, res, next) => {
-  res.locals.isAuthenticated = req.session.isLoggedIn;
-  res.locals.csrfToken = req.csrfToken();
-  next();
-});
 
 // Store the currently logged-in user in the request object from the session
 app.use((req, res, next) => {
@@ -118,6 +111,16 @@ app.use((req, res, next) => {
     next();
   }
 });
+
+app.use(flash());
+app.use(csrfProtection);
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  res.locals.userEmail = req.user ? req.user.email : '---';
+  next();
+});
+
 
 //----------------------------------------------------------------------------
 // Routes
@@ -138,6 +141,7 @@ app.use(function (err, req, res, next) {
     path: "/500",
     error: err,
     isAuthenticated: true,
+    
   });  
 });
 
