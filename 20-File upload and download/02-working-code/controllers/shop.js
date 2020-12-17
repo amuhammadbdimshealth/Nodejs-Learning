@@ -126,17 +126,30 @@ exports.getInvoice = (req, res, next) => {
   const invoiceName = `invoice-${orderId}.pdf`;
   const invoicePath = path.join("data", "invoices", invoiceName);
 
-  fs.readFile(invoicePath, (err, data) => {
-    if (err) {
-      return next(err);
-    }   
-    res.setHeader('Content-Type','application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="${invoiceName}"`)
-    res.send(data);
+  Order.findById(orderId).then((order) => {
+    if (!order) {
+      console.log('111111')
+      return next(new Error("Order not found"));
+    }
+    if (order.user.userId.toString() != req.user._id.toString()) {
+      console.log('222222')
+      return next(new Error("Unauthorized"));
+    }
+    fs.readFile(invoicePath, (err, data) => {
+      if (err) {
+        return next(err);
+      }
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename="${invoiceName}"`
+      );
+      res.send(data);
+    });
   });
+  
   // res.send("Invoice downloading..." + orderId);
 };
-
 
 // POST REQUEST HANDLERS
 exports.postCart = (req, res, next) => {
