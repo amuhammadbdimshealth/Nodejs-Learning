@@ -7,6 +7,7 @@ const path = require("path");
 // UTILITIES
 const globalServerVariables = require("../util/global-variables");
 const globalFunctions = require("../util/global-functions");
+const { pipeline } = require("stream");
 
 // GET REQUEST HANDLERS
 exports.getProducts = (req, res, next) => {
@@ -126,28 +127,39 @@ exports.getInvoice = (req, res, next) => {
   const invoiceName = `invoice-${orderId}.pdf`;
   const invoicePath = path.join("data", "invoices", invoiceName);
 
-  Order.findById(orderId).then((order) => {
-    if (!order) {
-      console.log('111111')
-      return next(new Error("Order not found"));
-    }
-    if (order.user.userId.toString() != req.user._id.toString()) {
-      console.log('222222')
-      return next(new Error("Unauthorized"));
-    }
-    fs.readFile(invoicePath, (err, data) => {
-      if (err) {
-        return next(err);
+  Order.findById(orderId)
+    .then((order) => {
+      if (!order) {
+        console.log("111111");
+        return next(new Error("Order not found"));
       }
+      if (order.user.userId.toString() != req.user._id.toString()) {
+        console.log("222222");
+        return next(new Error("Unauthorized"));
+      }
+      // fs.readFile(invoicePath, (err, data) => {
+      //   if (err) {
+      //     return next(err);
+      //   }
+      //   res.setHeader("Content-Type", "application/pdf");
+      //   res.setHeader(
+      //     "Content-Disposition",
+      //     `inline; filename="${invoiceName}"`
+      //   );
+      //   res.send(data);
+      // });
+      const fileStream = fs.createReadStream(invoicePath);
       res.setHeader("Content-Type", "application/pdf");
-      res.setHeader(
-        "Content-Disposition",
-        `attachment; filename="${invoiceName}"`
-      );
-      res.send(data);
-    });
-  });
-  
+      res.setHeader("Content-Disposition", `inline; filename="${invoiceName}"`);
+      // fileStream.pipe(res); // another way to pipe output of one stream to next
+      pipeline(fileStream, res, (err) => {        
+        if(err){
+          console.log(err, err.stack)
+        }        
+      });
+    })
+    .catch((err) => next(err));
+
   // res.send("Invoice downloading..." + orderId);
 };
 
