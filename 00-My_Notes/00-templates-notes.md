@@ -1,4 +1,4 @@
-# S20 | Template
+# S25 | Template
 
 ---
 
