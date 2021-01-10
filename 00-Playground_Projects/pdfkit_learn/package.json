@@ -1,0 +1,16 @@
+{
+  "name": "pdfkit_learn",
+  "version": "1.0.0",
+  "description": "PDFKit playground",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Arif",
+  "license": "ISC",
+  "dependencies": {
+    "blob-stream": "^0.1.3",
+    "browserify": "^17.0.0",
+    "pdfkit": "^0.11.0"
+  }
+}

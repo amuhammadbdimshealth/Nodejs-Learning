@@ -137,17 +137,6 @@ exports.getInvoice = (req, res, next) => {
         console.log("222222");
         return next(new Error("Unauthorized"));
       }
-      // fs.readFile(invoicePath, (err, data) => {
-      //   if (err) {
-      //     return next(err);
-      //   }
-      //   res.setHeader("Content-Type", "application/pdf");
-      //   res.setHeader(
-      //     "Content-Disposition",
-      //     `inline; filename="${invoiceName}"`
-      //   );
-      //   res.send(data);
-      // });
       const fileStream = fs.createReadStream(invoicePath);
       res.setHeader("Content-Type", "application/pdf");
       res.setHeader("Content-Disposition", `inline; filename="${invoiceName}"`);
