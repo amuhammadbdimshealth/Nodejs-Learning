@@ -8,6 +8,7 @@ const path = require("path");
 const globalServerVariables = require("../util/global-variables");
 const globalFunctions = require("../util/global-functions");
 const { pipeline } = require("stream");
+const PDFDocument = require('pdfkit') 
 
 // GET REQUEST HANDLERS
 exports.getProducts = (req, res, next) => {
@@ -126,7 +127,7 @@ exports.getInvoice = (req, res, next) => {
   const orderId = req.params.orderId;
   const invoiceName = `invoice-${orderId}.pdf`;
   const invoicePath = path.join("data", "invoices", invoiceName);
-
+  const pdfDoc = new PDFDocument()
   Order.findById(orderId)
     .then((order) => {
       if (!order) {
@@ -137,15 +138,15 @@ exports.getInvoice = (req, res, next) => {
         console.log("222222");
         return next(new Error("Unauthorized"));
       }
-      const fileStream = fs.createReadStream(invoicePath);
       res.setHeader("Content-Type", "application/pdf");
       res.setHeader("Content-Disposition", `inline; filename="${invoiceName}"`);
-      // fileStream.pipe(res); // another way to pipe output of one stream to next
-      pipeline(fileStream, res, (err) => {        
-        if(err){
-          console.log(err, err.stack)
-        }        
-      });
+      
+      pdfDoc.pipe(fs.createWriteStream(invoicePath));
+      pdfDoc.pipe(res);
+
+      pdfDoc.text("Test invoice");
+      pdfDoc.end();
+      
     })
     .catch((err) => next(err));
 
