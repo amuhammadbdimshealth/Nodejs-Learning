@@ -4,6 +4,7 @@ const Product = require("../models/product");
 const product = require("../models/product");
 const { validationResult } = require("express-validator");
 const mongoose = require("mongoose");
+const fs = require("fs");
 
 // Utility function
 function renderAddEditProductWithError(config) {
@@ -179,7 +180,7 @@ exports.postEditProduct = (req, res, next) => {
   Product.findOne({ _id: productId, userid: loggedUserId }).then((product) => {
     if (product) {
       console.log("YOU THE PRODUCT OWNER", product);
-      
+
       // replace the product in the DB/file with the updated product
       if (newImage) {
         imageUrl = newImage.path;
@@ -209,6 +210,11 @@ exports.postDeleteProduct = (req, res, next) => {
   const loggedUserId = req.user._id.toString();
   Product.findOne({ _id: productId, userid: loggedUserId }).then((product) => {
     if (product) {
+      // Remove the linked product image file 
+      fs.unlink(product.imageUrl, (err) => {        
+        if(err) next(err);
+      });
+      // Remove the product from DB
       product
         .deleteOne()
         .then(() => {
@@ -218,6 +224,7 @@ exports.postDeleteProduct = (req, res, next) => {
           console.log(err);
           next(err);
         });
+      // If user is not the product owner then..
     } else {
       console.log("YOU ARE NOT THE PRODUCT OWNER");
       res.redirect("/admin/products");
