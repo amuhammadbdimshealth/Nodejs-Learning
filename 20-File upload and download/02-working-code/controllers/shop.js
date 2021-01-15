@@ -8,7 +8,7 @@ const path = require("path");
 const globalServerVariables = require("../util/global-variables");
 const globalFunctions = require("../util/global-functions");
 const { pipeline } = require("stream");
-const PDFDocument = require('pdfkit') 
+const PDFDocument = require("pdfkit");
 
 // GET REQUEST HANDLERS
 exports.getProducts = (req, res, next) => {
@@ -122,12 +122,32 @@ exports.getCheckout = (req, res, next) => {
     isAuthenticated: req.session.isLoggedIn,
   });
 };
-
+function generateInvoicePdf(pdfDoc, order) {
+  // Write to the pdf
+  pdfDoc.fontSize(20).text("Invoice details", {
+    underline: true,
+  });
+  pdfDoc.moveDown(2);
+  let totalPrice = 0;
+  order.products.forEach((p, i) => {
+    const pdfProductLine = `${i + 1} --- ${p.product.title} : ${p.quantity} x ${
+      p.product.price
+    }`;
+    totalPrice += p.quantity * p.product.price;
+    console.log(pdfProductLine);
+    pdfDoc.fontSize(15).text(pdfProductLine);
+  });
+  pdfDoc.moveDown().text(`Total price: ${totalPrice}`, { underline: true });
+  pdfDoc
+    .fillColor("blue")
+    .text("Back to orders", { link: "/orders", underline: true });
+  return pdfDoc;
+}
 exports.getInvoice = (req, res, next) => {
   const orderId = req.params.orderId;
   const invoiceName = `invoice-${orderId}.pdf`;
   const invoicePath = path.join("data", "invoices", invoiceName);
-  const pdfDoc = new PDFDocument()
+  let pdfDoc = new PDFDocument();
   Order.findById(orderId)
     .then((order) => {
       if (!order) {
@@ -140,13 +160,11 @@ exports.getInvoice = (req, res, next) => {
       }
       res.setHeader("Content-Type", "application/pdf");
       res.setHeader("Content-Disposition", `inline; filename="${invoiceName}"`);
-      
+
       pdfDoc.pipe(fs.createWriteStream(invoicePath));
       pdfDoc.pipe(res);
-
-      pdfDoc.text("Test invoice");
+      pdfDoc = generateInvoicePdf(pdfDoc, order);
       pdfDoc.end();
-      
     })
     .catch((err) => next(err));
 

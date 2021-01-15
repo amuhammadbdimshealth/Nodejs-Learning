@@ -135,7 +135,7 @@ app.use(errorRoutes);
  * https://expressjs.com/en/guide/error-handling.html
  */
 app.use(function (err, req, res, next) {
-  console.log("CAUGHT");
+  console.log("CAUGHT",err);
   res.status(500).render("error/500", {
     pageTitle: "Error",
     path: "/500",
