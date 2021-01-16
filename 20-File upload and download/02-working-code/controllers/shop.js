@@ -2,31 +2,46 @@ const Product = require("../models/product");
 const User = require("../models/user");
 // const Cart = require("../models/cart");
 const Order = require("../models/order");
+
 const fs = require("fs");
 const path = require("path");
+const PDFDocument = require("pdfkit");
+
 // UTILITIES
 const globalServerVariables = require("../util/global-variables");
 const globalFunctions = require("../util/global-functions");
 const { pipeline } = require("stream");
-const PDFDocument = require("pdfkit");
+const { log } = require("console");
+
+// GLOBAL CONSTANTS
+const ITEMS_PER_PAGE = 3;
 
 // GET REQUEST HANDLERS
 exports.getProducts = (req, res, next) => {
-  //MONGO
-  Product.find()
-    .then((products) => {
-      console.log("Controller_getProducts->", products);
+  const page = req.query.page || 1;
+  let totalProductCount = 0;
+  let numPages = 0;
+  Product.countDocuments()
+    .then((count) => {
+      totalProductCount = count;
+      numPages = Math.ceil(totalProductCount / ITEMS_PER_PAGE);      
+      return Product.find()
+        .skip((page - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE);
+    })
+    .then((products) => {      
       res.render("shop/product-list", {
         prods: products,
         pageTitle: "All Products",
         path: "/products",
-        // isAuthenticated: req.session.isLoggedIn
+        numPages: numPages,
+        currentPage: page
       });
     })
     .catch((err) => {
       console.log(err);
       next(err);
-    });
+    }); 
 };
 /**
  * req.params : The captured values are populated in the req.params object, with the name of the route parameter specified in the path as their respective keys.
@@ -51,25 +66,24 @@ exports.getProduct = (req, res, next) => {
     });
 };
 exports.getIndex = (req, res, next) => {
-  const loggedInCookie = globalFunctions.getCookie(req);
-  // req
-  //   .get("Cookie")
-  //   .split(";")[1]
-  //   .trim()
-  //   .split("=")[1] == 'true';
-
-  Product.find()
-    .then((products) => {
-      // console.log("Controller_Index->", products);
+  const page = req.query.page || 1;
+  let totalProductCount = 0;
+  let numPages = 0;
+  Product.countDocuments()
+    .then((count) => {
+      totalProductCount = count;
+      numPages = Math.ceil(totalProductCount / ITEMS_PER_PAGE);      
+      return Product.find()
+        .skip((page - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE);
+    })
+    .then((products) => {      
       res.render("shop/index", {
         prods: products,
         pageTitle: "Shop",
         path: "/",
-        // isAuthenticatedsession.: globalServerVariables.isAuthenticated
-        // isAuthenticated: req.isLoggedIn
-        // isAuthenticated: loggedInCookie
-        // isAuthenticated: req.session.isLoggedIn,
-        // csrfToken: req.csrfToken(),
+        numPages: numPages,
+        currentPage: page
       });
     })
     .catch((err) => {

@@ -73,10 +73,7 @@ exports.getEditProduct = (req, res, next) => {
 
 exports.getProducts = (req, res, next) => {
   //MONGO
-  Product
-    .find
-    //{userid: req.user._id}
-    ()
+  Product.find()
     .populate({ path: "userid", select: "email" })
     .then((products) => {
       res.render("admin/products", {
@@ -210,9 +207,9 @@ exports.postDeleteProduct = (req, res, next) => {
   const loggedUserId = req.user._id.toString();
   Product.findOne({ _id: productId, userid: loggedUserId }).then((product) => {
     if (product) {
-      // Remove the linked product image file 
-      fs.unlink(product.imageUrl, (err) => {        
-        if(err) next(err);
+      // Remove the linked product image file
+      fs.unlink(product.imageUrl, (err) => {
+        if (err) next(err);
       });
       // Remove the product from DB
       product
