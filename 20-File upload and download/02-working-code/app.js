@@ -1,26 +1,20 @@
-// Imports
-const path = require("path");  
-
-// const express = require("express");
 const bodyParser = require("body-parser");
 var session = require("express-session"); // Session management // https://github.com/expressjs/session
-var MongoDBStore = require("connect-mongodb-session")(session); // Session management // https://github.com/mongodb-js/connect-mongodb-session#readme
+const csrf = require("csurf"); // CSRF Protection
+const flash = require("connect-flash"); // Flash error messages
+const express = require("express");
+const multer = require("multer");
 
-const errorController = require("./controllers/error");
+const path = require("path");  
+var MongoDBStore = require("connect-mongodb-session")(session); // Session management // https://github.com/mongodb-js/connect-mongodb-session#readme
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
 const errorRoutes = require("./routes/error");
 const User = require("./models/user");
 const mongoose = require("mongoose"); // Mongoose
-const csrf = require("csurf"); // CSRF Protection
-const flash = require("connect-flash"); // Flash error messages
-const express = require("express");
-const multer = require("multer");
-const helpers = require("./playground/helpers");
 const errorRoutesPlayground = require("./playground/error-route");
-const fileuploadRoutesPlayground = require("./playground/fileupload-route");
-const { diskStorage } = require("multer");
+
 
 //----------------------------------------------------------------------------
 // App
