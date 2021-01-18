@@ -228,3 +228,32 @@ exports.postDeleteProduct = (req, res, next) => {
     }
   });
 };
+
+exports.deleteProduct = (req, res, next) => {
+  console.log("IN");
+  const productId = req.params.productId || 7000;
+  const loggedUserId = req.user._id.toString();
+  Product.findOne({ _id: productId, userid: loggedUserId }).then((product) => {
+    if (product) {
+      // Remove the linked product image file
+      fs.unlink(product.imageUrl, (err) => {
+        if (err) next(err);
+      });
+      // Remove the product from DB
+      product
+        .deleteOne()
+        .then(() => {
+          res.json({ message: "Product Deleted" });
+        })
+        .catch((err) => {
+          console.log(err);
+          next(err);
+        });
+      // If user is not the product owner then..
+    } else {
+      // const error = new Error("YOU ARE NOT THE PRODUCT OWNER");
+      // next(error);
+      res.status(500).json({message: 'Perhaps Your are not the product owner !'})
+    }
+  });
+};

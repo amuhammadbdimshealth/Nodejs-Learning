@@ -6,24 +6,20 @@ const sendMail = require("../controllers/sendmail");
 const sendMailSendgrid = require("../controllers/sendmail-sendgrid");
 const { addProductValidators } = require("../validators/admin");
 
-// // /admin/add-product => GET
-router.get("/add-product", isAuth, adminController.getAddProduct);
-
-// // /admin/products => GET
+// GET
 router.get("/products", isAuth, adminController.getProducts);
+router.get("/add-product", isAuth, adminController.getAddProduct);
+router.get("/edit-product/:productId", isAuth, adminController.getEditProduct);
+router.get("/sendmail", sendMail.sendEmailTest);
+router.get("/sendmail-sendgrid", sendMailSendgrid.sendEmailTest);
 
-// // /admin/add-product => POST
+// POST
 router.post(
   "/add-product",
   isAuth,
   addProductValidators,
   adminController.postAddProduct
 );
-
-// // /admin/edit-product => GET
-router.get("/edit-product/:productId", isAuth, adminController.getEditProduct);
-
-// // /admin/edit-product => POST
 router.post(
   "/edit-product",
   isAuth,
@@ -31,7 +27,6 @@ router.post(
   adminController.postEditProduct
 );
 router.post("/delete-product", isAuth, adminController.postDeleteProduct);
-router.get("/sendmail", sendMail.sendEmailTest);
-router.get("/sendmail-sendgrid", sendMailSendgrid.sendEmailTest);
+router.post("/product/:productId", isAuth, adminController.deleteProduct);
 
 module.exports = router;
