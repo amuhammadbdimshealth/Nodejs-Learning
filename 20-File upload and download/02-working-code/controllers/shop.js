@@ -24,24 +24,24 @@ exports.getProducts = (req, res, next) => {
   Product.countDocuments()
     .then((count) => {
       totalProductCount = count;
-      numPages = Math.ceil(totalProductCount / ITEMS_PER_PAGE);      
+      numPages = Math.ceil(totalProductCount / ITEMS_PER_PAGE);
       return Product.find()
         .skip((page - 1) * ITEMS_PER_PAGE)
         .limit(ITEMS_PER_PAGE);
     })
-    .then((products) => {      
+    .then((products) => {
       res.render("shop/product-list", {
         prods: products,
         pageTitle: "All Products",
         path: "/products",
         numPages: numPages,
-        currentPage: page
+        currentPage: page,
       });
     })
     .catch((err) => {
       console.log(err);
       next(err);
-    }); 
+    });
 };
 /**
  * req.params : The captured values are populated in the req.params object, with the name of the route parameter specified in the path as their respective keys.
@@ -72,18 +72,18 @@ exports.getIndex = (req, res, next) => {
   Product.countDocuments()
     .then((count) => {
       totalProductCount = count;
-      numPages = Math.ceil(totalProductCount / ITEMS_PER_PAGE);      
+      numPages = Math.ceil(totalProductCount / ITEMS_PER_PAGE);
       return Product.find()
         .skip((page - 1) * ITEMS_PER_PAGE)
         .limit(ITEMS_PER_PAGE);
     })
-    .then((products) => {      
+    .then((products) => {
       res.render("shop/index", {
         prods: products,
         pageTitle: "Shop",
         path: "/",
         numPages: numPages,
-        currentPage: page
+        currentPage: page,
       });
     })
     .catch((err) => {
@@ -114,6 +114,9 @@ exports.getCart = (req, res, next) => {
         cart: cart,
         isAuthenticated: req.session.isLoggedIn,
       });
+    })
+    .catch((err) => {
+      next(err);
     });
 };
 exports.getOrders = (req, res, next) => {
@@ -130,11 +133,27 @@ exports.getOrders = (req, res, next) => {
   });
 };
 exports.getCheckout = (req, res, next) => {
-  res.render("shop/checkout", {
-    pageTitle: "Checkout",
-    path: "/checkout",
-    isAuthenticated: req.session.isLoggedIn,
-  });
+  req.user
+    .populate({ path: "cart.items.productId" })
+    .execPopulate()
+    .then((pUser) => {
+      console.log("63-cartItems", pUser.cart);
+      const cartItems = pUser.cart.items;
+      const totalPrice = cartItems.reduce(
+        (total, cartItem) =>
+        total + cartItem.quantity * cartItem.productId.price,
+        0
+      );
+      const cart = { cartItems: cartItems, totalPrice: totalPrice };
+      res.render("shop/checkout", {
+        pageTitle: "Checkout",
+        path: "/checkout",
+        cart: cart,
+      });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
 function generateInvoicePdf(pdfDoc, order) {
   // Write to the pdf

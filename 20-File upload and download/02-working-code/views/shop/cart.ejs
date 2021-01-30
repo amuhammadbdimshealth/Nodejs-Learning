@@ -20,7 +20,7 @@
             </li>
             <% } %>
         </ul>
-        <% if (cart.totalPrice > 0) { %>
+        <% if (cart.totalPrice> 0) { %>
           <div style="text-align: center; font-weight: bold">
             <span> TotalPrice : </span>
             <span>
@@ -28,10 +28,7 @@
             </span>
           </div>
           <div class="centered">
-            <form action="/create-order" method="POST">
-              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-              <button type="submit" class="btn">Order Now</button>
-            </form>
+            <a class="btn" href="/checkout">Order Now!</a>
           </div>
           <% }else { %>
             <div>
