@@ -1,3 +1,5 @@
+const stripe = require('stripe')('sk_test_51IFa9bESLqGUTzrAklwNfz4dVkiuoUmajPgFjlDpil3L0NRIy8kciZnHoGLI6H31wveAXwF54hvcBIIOuImkOLzS00gDjVuT5k');
+
 const Product = require("../models/product");
 const User = require("../models/user");
 // const Cart = require("../models/cart");
@@ -12,6 +14,7 @@ const globalServerVariables = require("../util/global-variables");
 const globalFunctions = require("../util/global-functions");
 const { pipeline } = require("stream");
 const { log } = require("console");
+const { name } = require('ejs');
 
 // GLOBAL CONSTANTS
 const ITEMS_PER_PAGE = 3;
@@ -132,12 +135,29 @@ exports.getOrders = (req, res, next) => {
     });
   });
 };
+getLineItemsForStripeCheckoutSession = (cartItems) => {
+  const line_items = cartItems.map(item => {          
+    return {
+      price_data: {
+        currency: 'usd',
+        product_data: {
+          name: item.productId.title,
+          images: ['https://i.imgur.com/EHyR2nP.png'],
+          description: item.productId.description
+        },
+        unit_amount: item.productId.price,
+      },
+      quantity: item.quantity,
+    }
+  })
+  return line_items;  
+}
 exports.getCheckout = (req, res, next) => {
+  const YOUR_DOMAIN = 'http://localhost:4000';
   req.user
     .populate({ path: "cart.items.productId" })
     .execPopulate()
-    .then((pUser) => {
-      console.log("63-cartItems", pUser.cart);
+    .then(async (pUser) => {      
       const cartItems = pUser.cart.items;
       const totalPrice = cartItems.reduce(
         (total, cartItem) =>
@@ -145,10 +165,20 @@ exports.getCheckout = (req, res, next) => {
         0
       );
       const cart = { cartItems: cartItems, totalPrice: totalPrice };
+      const line_items = getLineItemsForStripeCheckoutSession();
+      console.log("LITEMS", line_items, line_items[0].price_data.product_data.name);
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: line_items,
+        mode: 'payment',
+        success_url: `${YOUR_DOMAIN}/success`,
+        cancel_url: `${YOUR_DOMAIN}/cancel`,
+      });      
       res.render("shop/checkout", {
         pageTitle: "Checkout",
         path: "/checkout",
         cart: cart,
+        stripeSessionId: session.id
       });
     })
     .catch((err) => {

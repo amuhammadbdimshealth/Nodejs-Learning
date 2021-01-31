@@ -21,6 +21,28 @@
                     <span>
                         <%= cart.totalPrice %>
                     </span>
-                </div>                
+                </div>
+                <div class="centered">
+                    <button id="checkout-button" class="btn">ORDER</button>
+                    <script src="https://js.stripe.com/v3/"></script>
+                    <script>
+                        var stripe = Stripe("pk_test_51IFa9bESLqGUTzrA3iFzwmzK5MFnShJJfkC3OgSsXSVhdx81rUjKkdUDkNpjO767UEj16dUF1ZJGxcfKidk63luD006K9MpRgK");
+                        var checkoutButton = document.getElementById("checkout-button");
+                        checkoutButton.addEventListener("click", function () {
+                            stripe.redirectToCheckout({ sessionId: '<%= stripeSessionId %>' })
+                                .then(function (result) {
+                                    // If redirectToCheckout fails due to a browser or network
+                                    // error, you should display the localized error message to your
+                                    // customer using error.message.
+                                    if (result.error) {
+                                        alert(result.error.message);
+                                    }
+                                })
+                                .catch(function (error) {
+                                    console.error("Error:", error);
+                                });
+                        });
+                    </script>
+                </div>
             </main>
             <%- include('../includes/end.ejs') %>
