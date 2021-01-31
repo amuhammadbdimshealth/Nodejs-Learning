@@ -145,7 +145,7 @@ getLineItemsForStripeCheckoutSession = (cartItems) => {
           images: ['https://i.imgur.com/EHyR2nP.png'],
           description: item.productId.description
         },
-        unit_amount: item.productId.price,
+        unit_amount: item.productId.price * 100,
       },
       quantity: item.quantity,
     }
@@ -165,14 +165,14 @@ exports.getCheckout = (req, res, next) => {
         0
       );
       const cart = { cartItems: cartItems, totalPrice: totalPrice };
-      const line_items = getLineItemsForStripeCheckoutSession();
+      const line_items = getLineItemsForStripeCheckoutSession(cartItems);
       console.log("LITEMS", line_items, line_items[0].price_data.product_data.name);
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
         line_items: line_items,
         mode: 'payment',
-        success_url: `${YOUR_DOMAIN}/success`,
-        cancel_url: `${YOUR_DOMAIN}/cancel`,
+        success_url: `${YOUR_DOMAIN}/checkout/success`,
+        cancel_url: `${YOUR_DOMAIN}/checkout/cancel`,
       });      
       res.render("shop/checkout", {
         pageTitle: "Checkout",
