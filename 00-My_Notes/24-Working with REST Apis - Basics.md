@@ -125,20 +125,8 @@ And to tell the browser, we have to change something on the server and this is a
 
 With that added we need to do one last thing, we need to call next so that the request can now continue and can be handled by our routes but now every response that we send will have these headers and therefore if we save our server side code and we restart the server therefore and we go back to codepen, if I clear these errors and I click get posts again, now it just works as you can see because now we set the appropriate cors headers on the server. 
 29 - 42
-
 <img src="./assets/S24/29.png" alt="packages" width="90%"/>
 <img src="./assets/S24/30.png" alt="packages" width="90%"/>
-
-<img src="./assets/S24/31.png" alt="packages" width="90%"/>
-<img src="./assets/S24/32.png" alt="packages" width="90%"/>
-<img src="./assets/S24/33.png" alt="packages" width="90%"/>
-<img src="./assets/S24/34.png" alt="packages" width="90%"/>
-<img src="./assets/S24/35.png" alt="packages" width="90%"/>
-<img src="./assets/S24/36.png" alt="packages" width="90%"/>
-<img src="./assets/S24/37.png" alt="packages" width="90%"/>
-<img src="./assets/S24/38.png" alt="packages" width="90%"/>
-<img src="./assets/S24/39.png" alt="packages" width="90%"/>
-
 <img src="./assets/S24/40.png" alt="packages" width="90%"/>
 <img src="./assets/S24/41.png" alt="packages" width="90%"/>
 <img src="./assets/S24/42.png" alt="packages" width="90%"/>
