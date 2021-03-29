@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const app = express();
 const feedRoutes = require("./routes/feed");
 
-app.use(bodyParser.json());
+app.use(express.json());
 app.use((req, res, next) => {
     var origin = req.get('origin'); //-> https://cdpn.io
     var host = req.get('host'); //-> localhost:8080
