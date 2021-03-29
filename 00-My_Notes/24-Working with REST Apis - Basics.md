@@ -131,6 +131,7 @@ With that added we need to do one last thing, we need to call next so that the r
 <img src="./assets/S24/41.png" alt="packages" width="90%"/>
 <img src="./assets/S24/42.png" alt="packages" width="90%"/>
 
+Codepen Link to test CORS - https://codepen.io/amuhammad/pen/QWGNrex?editors=1011
 
  # S24 | Sending POST Requests
 
