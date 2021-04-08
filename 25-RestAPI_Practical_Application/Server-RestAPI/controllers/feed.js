@@ -13,8 +13,8 @@ const router = express.Router();
 exports.getPosts = (req, res, next) => {
   res.status(200).json({
     posts: [
-      { title: "First post", content: "This is the first post" },
-      { title: "Second post", content: "This is the second post" },
+      { _id: 0, creator: { name: 'Arif' }, createdAt: new Date().toISOString(), title: 'My First Post', imageUrl: 'URL', content: 'My Post Content' },
+      { _id: 1, creator: { name: 'Juthi' }, createdAt: new Date().toISOString(), title: 'My First Post', imageUrl: 'URL', content: 'My Post Content' }
     ],
   });
 };

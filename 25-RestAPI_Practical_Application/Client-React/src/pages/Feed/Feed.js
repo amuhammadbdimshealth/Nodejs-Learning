@@ -17,7 +17,7 @@ class Feed extends Component {
     editPost: null,
     status: '',
     postPage: 1,
-    postsLoading: true,
+    postsLoading: false,//true,
     editLoading: false
   };
 
@@ -38,6 +38,7 @@ class Feed extends Component {
   }
 
   loadPosts = direction => {
+    const url = 'http://localhost:8080/feed/posts'
     if (direction) {
       this.setState({ postsLoading: true, posts: [] });
     }
@@ -50,14 +51,16 @@ class Feed extends Component {
       page--;
       this.setState({ postPage: page });
     }
-    fetch('URL')
+    fetch(url)
       .then(res => {
         if (res.status !== 200) {
+          console.log('Failed to fetch posts')
           throw new Error('Failed to fetch posts.');
         }
         return res.json();
       })
       .then(resData => {
+        console.log(resData)
         this.setState({
           posts: resData.posts,
           totalPosts: resData.totalItems,
