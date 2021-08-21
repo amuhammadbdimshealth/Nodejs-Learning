@@ -105,16 +105,25 @@ class Feed extends Component {
   };
 
   finishEditHandler = postData => {
+    console.log("FinishEditHandler")
     this.setState({
       editLoading: true
     });
     // Set up data (with image!)
-    let url = 'URL';
+    let url = 'http://localhost:8080/feed/create-post';
+    let method = 'POST';
+
     if (this.state.editPost) {
       url = 'URL';
     }
 
-    fetch(url)
+    fetch(url, {
+      method: method,
+      body: JSON.stringify(postData),
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
       .then(res => {
         if (res.status !== 200 && res.status !== 201) {
           throw new Error('Creating or editing a post failed!');
@@ -136,7 +145,9 @@ class Feed extends Component {
               p => p._id === prevState.editPost._id
             );
             updatedPosts[postIndex] = post;
-          } else if (prevState.posts.length < 2) {
+          } //else if (prevState.posts.length < 2) {
+          else {
+            console.log('POST ADDED')
             updatedPosts = prevState.posts.concat(post);
           }
           return {
@@ -217,11 +228,13 @@ class Feed extends Component {
             </Button>
           </form>
         </section>
+
         <section className="feed__control">
           <Button mode="raised" design="accent" onClick={this.newPostHandler}>
             New Post
           </Button>
         </section>
+
         <section className="feed">
           {this.state.postsLoading && (
             <div style={{ textAlign: 'center', marginTop: '2rem' }}>
