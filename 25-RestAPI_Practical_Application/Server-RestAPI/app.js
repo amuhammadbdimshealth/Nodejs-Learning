@@ -18,7 +18,12 @@ app.use((req, res, next) => {
     next();
 });
 app.use("/feed", feedRoutes);
-
+app.use((err, req, res, next) => {
+    console.log(err);
+    res.status(err.statusCode).json({
+        message: err.message
+    })
+})
 
 mongoose.connect("mongodb+srv://amuhammad:24Aug1989@arif-cluster0.r4goo.mongodb.net/restAPIPracticeDB?authSource=admin&replicaSet=Arif-Cluster0-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true", { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
