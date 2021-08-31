@@ -9,5 +9,6 @@ const createPostValidators = [
 
 router.get('/posts', feedController.getPosts)
 router.post('/create-post', createPostValidators, feedController.createPost)
+router.get('/post/:postId', feedController.getPost);
 
 module.exports = router;

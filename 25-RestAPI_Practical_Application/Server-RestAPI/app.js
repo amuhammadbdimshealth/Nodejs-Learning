@@ -4,6 +4,7 @@ const app = express();
 const feedRoutes = require("./routes/feed");
 const mongoose = require("mongoose");
 
+app.use('/images', express.static('images'));
 app.use(express.json());
 app.use((req, res, next) => {
     var origin = req.get('origin'); //-> https://cdpn.io
@@ -28,7 +29,6 @@ app.use((err, req, res, next) => {
 mongoose.connect("mongodb+srv://amuhammad:24Aug1989@arif-cluster0.r4goo.mongodb.net/restAPIPracticeDB?authSource=admin&replicaSet=Arif-Cluster0-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true", { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         app.listen(8080);
-
 
     }).catch((err) => {
         console.log("Error connecting to MongoDB", err)
